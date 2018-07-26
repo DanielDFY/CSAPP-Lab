@@ -1,6 +1,15 @@
 # attacklab
 
-### File introduction
+## Table of contents
+
+* [File Introduction](#file)
+* [Commands](#commands)
+* [Part I: Code Injection Attacks](#part1)
+  * [phase 1](#phase1)
+  * [phase 2](#phase2)
+  * [phase 3](#phase3)
+
+<h2 id = "file">File introduction</h2>
 
 README.txt: A file describing the contents of the directory
 
@@ -35,15 +44,15 @@ create a byte with a hex value of 0, you need to write it as 00. To create the w
 you should pass “ef be ad de” to HEX2RAW (note the reversal required for little-endian byte
 ordering).
 
-### Commands
+<h2 id = "commands">Commands</h2>
 
-#####Using HEX2RAW
+### Using HEX2RAW
 
 ```shell
 unix> ./hex2raw < exploit.txt > exploit-raw.txt          # store the raw string in a file
 ```
 
-##### Using GDB
+### Using GDB
 
 ```
 unix> gdb ctarget                                        # use gdb to run ctarget
@@ -55,21 +64,19 @@ unix> gdb ctarget                                        # use gdb to run ctarge
 
 More usages can be found in [gdb-ref](./gdb-ref.md)
 
-##### Generating byte codes
+### Generating byte codes
 
 ```shell
 unix> gcc -c example.s
 unix> objdump -d example.o
 ```
 
----
-
-### Part I: Code Injection Attacks
+<h2 id = "part1">Part I: Code Injection Attacks</h2>
 
 >For the first three phases, your exploit strings will attack CTARGET. This program is set up in a way that
 >the stack positions will be consistent from one run to the next and so that data on the stack can be treated as executable code. These features make the program vulnerable to attacks where the exploit strings contain the byte encodings of executable code.
 
-#### phase1
+<h3 id = "phase1">Phase 1</h3>
 
 Function getbuf is called within CTARGET by a function test having the following C code:
 
@@ -187,3 +194,4 @@ PASS: Sent exploit string to server to be validated.
 NICE JOB!
 ```
 
+<h3 id = "phase2">Phase 2</h3>
