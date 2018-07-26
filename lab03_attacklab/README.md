@@ -38,11 +38,9 @@ terminate the string.
 HEX2RAW expects two-digit hex values separated by one or more white spaces. So if you want to
 create a byte with a hex value of 0, you need to write it as 00. To create the word 0xdeadbeef
 you should pass “ef be ad de” to HEX2RAW (note the reversal required for little-endian byte
-ordering).
+ordering). 
 
-<span id = "commands"></span> 
-
-Commands
+<h3 id = "commands">Commands</h3> 
 
 #####Using HEX2RAW
 
