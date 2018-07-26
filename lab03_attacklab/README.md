@@ -1,6 +1,6 @@
 # attacklab
 
-### Table of contents
+##Table of contents
 
 * [File Introduction](#file)
 * [Commands](#commands)
@@ -44,7 +44,7 @@ create a byte with a hex value of 0, you need to write it as 00. To create the w
 you should pass “ef be ad de” to HEX2RAW (note the reversal required for little-endian byte
 ordering).
 
-<h3 id = "commands">Commands</h3>
+<h2 id = "commands">Commands</h2>
 
 #### Using HEX2RAW
 
@@ -71,12 +71,12 @@ unix> gcc -c example.s
 unix> objdump -d example.o
 ```
 
-<h3 id = "part1">Part I: Code Injection Attacks</h3>
+<h2 id = "part1">Part I: Code Injection Attacks</h2>
 
 >For the first three phases, your exploit strings will attack CTARGET. This program is set up in a way that
 >the stack positions will be consistent from one run to the next and so that data on the stack can be treated as executable code. These features make the program vulnerable to attacks where the exploit strings contain the byte encodings of executable code.
 
-<h4 id = "phase1">Phase 1</h4>
+<h3 id = "phase1">Phase 1</h3>
 
 Function getbuf is called within CTARGET by a function test having the following C code:
 
@@ -194,7 +194,7 @@ PASS: Sent exploit string to server to be validated.
 NICE JOB!
 ```
 
-<h4 id = "phase2">Phase 2</h4>
+<h3 id = "phase2">Phase 2</h3>
 
 Phase 2 involves injecting a small amount of code as part of your exploit string.
 Within the file ctarget there is code for a function touch2 having the following C representation:
@@ -240,6 +240,5 @@ Dump of assembler code for function touch2:
    0x00005555555559e6 <+83>:	callq  0x555555555db6 <validate>
    0x00005555555559eb <+88>:	jmp    0x5555555559c6 <touch2+51>
 End of assembler dump.
-
 ```
 
