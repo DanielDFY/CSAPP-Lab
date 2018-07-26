@@ -1,11 +1,13 @@
-# attacklab
+#attacklab
 
-### Table of contents
+###Table of contents
 
-* [File introduction](#file-introduction)
-* [Commands](#commands)
+* [File introduction](#user-content-file-introduction)
+* [Commands](#user-content-commands)
+* [Part I: Code Injection Attacks](#user-content-part1)
+* 
 
-<h3 id = "file introduction">File introduction</h3> 
+<h3 id = "user-content-file-introduction">File introduction</h3> 
 
 README.txt: A file describing the contents of the directory
 
@@ -38,9 +40,9 @@ terminate the string.
 HEX2RAW expects two-digit hex values separated by one or more white spaces. So if you want to
 create a byte with a hex value of 0, you need to write it as 00. To create the word 0xdeadbeef
 you should pass “ef be ad de” to HEX2RAW (note the reversal required for little-endian byte
-ordering). 
+ordering).
 
-<h3 id = "commands">Commands</h3> 
+<h3 id = "user-content-commands">Commands</h3> 
 
 #####Using HEX2RAW
 
@@ -69,7 +71,7 @@ unix> objdump -d example.o
 
 ---
 
-### Part I: Code Injection Attacks
+<h3 id = "user-content-part1">Part I: Code Injection Attacks</h3> 
 
 >For the first three phases, your exploit strings will attack CTARGET. This program is set up in a way that
 >the stack positions will be consistent from one run to the next and so that data on the stack can be treated as executable code. These features make the program vulnerable to attacks where the exploit strings contain the byte encodings of executable code.
