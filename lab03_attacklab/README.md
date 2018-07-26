@@ -142,7 +142,7 @@ To find the address the touch1, we need to get the disassembled code.
 
  Then we get codes which looked like
 
-```assembly
+```
 Dump of assembler code for function touch1:
    0x0000555555555965 <+0>:	sub    $0x8,%rsp
    0x0000555555555969 <+4>:	movl   $0x1,0x202b69(%rip)        # 0x5555557584dc <vlevel>
@@ -220,7 +220,7 @@ however, we must make it appear to touch2 as if we have passed your cookie as it
 
 As what we did in phase1, we need to run ctarget executable in gdb and set a breakpoint at getbuf and get the disassembled code of touch2
 
-```assembly
+```
 (gdb) disassemble touch2
 Dump of assembler code for function touch2:
    0x0000555555555993 <+0>:	sub    $0x8,%rsp
@@ -262,7 +262,7 @@ objdump -d atk2.o
 
  Then we get codes like below
 
-```assembly
+```
 Disassembly of section .text:
 
 0000000000000000 <.text>:
