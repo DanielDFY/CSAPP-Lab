@@ -555,14 +555,192 @@ NICE JOB!
       <td>48 89 fe</td>
       <td>48 89 ff</td>
    </tr>
+</table>
+
+* **Encodings of popq instructions**
+
+<table>
    <tr>
-      <td></td>
+      <th rowspan="2">Operation</td>
+      <th colspan="8">Register R</td>
+   </tr>
+   <tr>
+      <td>%rax</td>
+      <td>%rcx</td>
+      <td>%rdx</td>
+      <td>%rbx</td>
+      <td>%rsp</td>
+      <td>%rbp</td>
+      <td>%rsi</td>
+      <td>%rdi</td>
+   </tr>
+   <tr>
+      <td>popq R</td>
+      <td>58</td>
+      <td>59</td>
+      <td>5a</td>
+      <td>5b</td>
+      <td>5c</td>
+      <td>5d</td>
+      <td>5e</td>
+      <td>5f</td>
    </tr>
 </table>
 
-* Encodings of popq instructions
+* **Encodings of movl instructions**
+
+<table>
+   <tr>
+      <th rowspan="2">Source S</td>
+      <th colspan="8">Destination D</td>
+   </tr>
+   <tr>
+      <td>%eax</td>
+      <td>%ecx</td>
+      <td>%edx</td>
+      <td>%ebx</td>
+      <td>%esp</td>
+      <td>%ebp</td>
+      <td>%esi</td>
+      <td>%edi</td>
+   </tr>
+   <tr>
+      <td>%eax</td>
+      <td>89 c0</td>
+      <td>89 c1</td>
+      <td>89 c2</td>
+      <td>89 c3</td>
+      <td>89 c4</td>
+      <td>89 c5</td>
+      <td>89 c6</td>
+      <td>89 c7</td>
+   </tr>
+   <tr>
+      <td>%ecx</td>
+      <td>89 c8</td>
+      <td>89 c9</td>
+      <td>89 ca</td>
+      <td>89 cb</td>
+      <td>89 cc</td>
+      <td>89 cd</td>
+      <td>89 ce</td>
+      <td>89 cf</td>
+   </tr>
+   <tr>
+      <td>%edx</td>
+      <td>89 d0</td>
+      <td>89 d1</td>
+      <td>89 d2</td>
+      <td>89 d3</td>
+      <td>89 d4</td>
+      <td>89 d5</td>
+      <td>89 d6</td>
+      <td>89 d7</td>
+   </tr>
+   <tr>
+      <td>%ebx</td>
+      <td>89 d8</td>
+      <td>89 d9</td>
+      <td>89 da</td>
+      <td>89 db</td>
+      <td>89 dc</td>
+      <td>89 dd</td>
+      <td>89 de</td>
+      <td>89 df</td>
+   </tr>
+   <tr>
+      <td>%esp</td>
+      <td>89 e0</td>
+      <td>89 e1</td>
+      <td>89 e2</td>
+      <td>89 e3</td>
+      <td>89 e4</td>
+      <td>89 e5</td>
+      <td>89 e6</td>
+      <td>89 e7</td>
+   </tr>
+   <tr>
+      <td>%ebp</td>
+      <td>89 e8</td>
+      <td>89 e9</td>
+      <td>89 ea</td>
+      <td>89 eb</td>
+      <td>89 ec</td>
+      <td>89 ed</td>
+      <td>89 ee</td>
+      <td>89 ef</td>
+   </tr>
+   <tr>
+      <td>%esi</td>
+      <td>89 f0</td>
+      <td>89 f1</td>
+      <td>89 f2</td>
+      <td>89 f3</td>
+      <td>89 f4</td>
+      <td>89 f5</td>
+      <td>89 f6</td>
+      <td>89 f7</td>
+   </tr>
+   <tr>
+      <td>%edi</td>
+      <td>89 f8</td>
+      <td>89 f9</td>
+      <td>89 fa</td>
+      <td>89 fb</td>
+      <td>89 fc</td>
+      <td>89 fd</td>
+      <td>89 fe</td>
+      <td>89 ff</td>
+   </tr>
+</table>
+
+* **Encodings of 2-byte functional nop instructions**
+
+<table>
+    <tr>
+      <th rowspan="2">Operation</td>
+      <th colspan="4">Register R</td>
+   </tr>
+   <tr>
+      <td>%al</td>
+      <td>%cl</td>
+      <td>%dl</td>
+      <td>%bl</td>
+   </tr>
+   <tr>
+      <td>andb R, R</td>
+      <td>20 c0</td>
+      <td>20 c9</td>
+      <td>20 d2</td>
+      <td>20 db</td>
+   </tr>
+   <tr>
+      <td>orb R, R</td>
+      <td>08 c0</td>
+      <td>08 c9</td>
+      <td>08 d2</td>
+      <td>08 db</td>
+   </tr>
+   <tr>
+      <td>cmpb R, R</td>
+      <td>38 c0</td>
+      <td>38 c9</td>
+      <td>38 d2</td>
+      <td>38 db</td>
+   </tr>
+   <tr>
+      <td>testb R, R</td>
+      <td>84 c0</td>
+      <td>84 c9</td>
+      <td>84 d2</td>
+      <td>84 db</td>
+   </tr>
+</table>
 
 <h3 id = "phase4">Phase 4</h3>
 
 This phase is the same as phase 2 except using different method to call touch2 and pass the cookie. 
+
+All the gadgets we need should be found in the region of the code for rtarget demarcated by the
+functions start_farm and mid_farm. Only two gadgets can be used to do the attack. 
 
