@@ -450,6 +450,119 @@ NICE JOB!
 >
 > The solution for this is to use ROP (Return Oriented Programming). What ROP does is that since we can't execute our own code, we will look for instructions in the code that do the same thing as what we want. These are called gadgets and by combining these gadgets, we will be able to perform our exploit. 
 
+* **Encodings of movq instructions**
+
+<table>
+   <tr>
+      <th rowspan="2">Source S</td>
+      <th colspan="8">Destination D</td>
+   </tr>
+   <tr>
+      <td>%rax</td>
+      <td>%rcx</td>
+      <td>%rdx</td>
+      <td>%rbx</td>
+      <td>%rsp</td>
+      <td>%rbp</td>
+      <td>%rsi</td>
+      <td>%rdi</td>
+   </tr>
+   <tr>
+      <td>%rax</td>
+      <td>48 89 c0</td>
+      <td>48 89 c1</td>
+      <td>48 89 c2</td>
+      <td>48 89 c3</td>
+      <td>48 89 c4</td>
+      <td>48 89 c5</td>
+      <td>48 89 c6</td>
+      <td>48 89 c7</td>
+   </tr>
+   <tr>
+      <td>%rcx</td>
+      <td>48 89 c8</td>
+      <td>48 89 c9</td>
+      <td>48 89 ca</td>
+      <td>48 89 cb</td>
+      <td>48 89 cc</td>
+      <td>48 89 cd</td>
+      <td>48 89 ce</td>
+      <td>48 89 cf</td>
+   </tr>
+   <tr>
+      <td>%rdx</td>
+      <td>48 89 d0</td>
+      <td>48 89 d1</td>
+      <td>48 89 d2</td>
+      <td>48 89 d3</td>
+      <td>48 89 d4</td>
+      <td>48 89 d5</td>
+      <td>48 89 d6</td>
+      <td>48 89 d7</td>
+   </tr>
+   <tr>
+      <td>%rbx</td>
+      <td>48 89 d8</td>
+      <td>48 89 d9</td>
+      <td>48 89 da</td>
+      <td>48 89 db</td>
+      <td>48 89 dc</td>
+      <td>48 89 dd</td>
+      <td>48 89 de</td>
+      <td>48 89 df</td>
+   </tr>
+   <tr>
+      <td>%rsp</td>
+      <td>48 89 e0</td>
+      <td>48 89 e1</td>
+      <td>48 89 e2</td>
+      <td>48 89 e3</td>
+      <td>48 89 e4</td>
+      <td>48 89 e5</td>
+      <td>48 89 e6</td>
+      <td>48 89 e7</td>
+   </tr>
+   <tr>
+      <td>%rbp</td>
+      <td>48 89 e8</td>
+      <td>48 89 e9</td>
+      <td>48 89 ea</td>
+      <td>48 89 eb</td>
+      <td>48 89 ec</td>
+      <td>48 89 ed</td>
+      <td>48 89 ee</td>
+      <td>48 89 ef</td>
+   </tr>
+   <tr>
+      <td>%rsi</td>
+      <td>48 89 f0</td>
+      <td>48 89 f1</td>
+      <td>48 89 f2</td>
+      <td>48 89 f3</td>
+      <td>48 89 f4</td>
+      <td>48 89 f5</td>
+      <td>48 89 f6</td>
+      <td>48 89 f7</td>
+   </tr>
+   <tr>
+      <td>%rdi</td>
+      <td>48 89 f8</td>
+      <td>48 89 f9</td>
+      <td>48 89 fa</td>
+      <td>48 89 fb</td>
+      <td>48 89 fc</td>
+      <td>48 89 fd</td>
+      <td>48 89 fe</td>
+      <td>48 89 ff</td>
+   </tr>
+   <tr>
+      <td></td>
+   </tr>
+</table>
+
+* Encodings of popq instructions
+
 <h3 id = "phase4">Phase 4</h3>
 
 This phase is the same as phase 2 except using different method to call touch2 and pass the cookie. 
+
