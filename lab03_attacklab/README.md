@@ -10,6 +10,7 @@
   * [phase 3](#phase3)
 * [Part II: Return-Oriented Programming](#part2)
   * [phase 4](#phase4)
+  * [phase 5](#phase5)
 
 <h2 id = "file">File introduction</h2>
 
