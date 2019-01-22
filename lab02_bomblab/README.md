@@ -2,23 +2,23 @@
 
 ## Table of contents
 
-*[File Introduction](#file)
+* [File Introduction](#file)
 
-*[Commands](#commands)
+* [Commands](#commands)
 
-*[Part I: Normal Phases](#part1)
+* [Part I: Normal Phases](#part1)
 
-​	*[phase 1](#phase1)
+​   * [phase 1](#phase1)
 
-​	*[phase 2](#phase2)
+​	* [phase 2](#phase2)
 
-​	*[phase 3](#phase3)
+​	* [phase 3](#phase3)
 
-​	*[phase 4](#phase4)
+​	* [phase 4](#phase4)
 
-​	*[phase 5](#phase5)
+​	* [phase 5](#phase5)
 
-​	*[phase 6](#phase6)
+​	* [phase 6](#phase6)
 
 <h2 id = "file">File introduction</h2>
 
