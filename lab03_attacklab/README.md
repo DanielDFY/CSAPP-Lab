@@ -1,4 +1,4 @@
-# attacklab
+# Attack Lab
 
 ## Table of contents
 
