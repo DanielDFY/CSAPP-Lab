@@ -271,11 +271,9 @@ Check our answers:
 Halfway there!
 ```
 
-<<<<<<< HEAD
 Now we can go to phase 4.
 
-=======
->>>>>>> a7dd32d04d09733343475027388035100f378e56
+
 <h3 id = "phase4">Phase 4</h3>
 
 The forth phase is about recursive calls and the stack discipline. Remember to set the break points.
