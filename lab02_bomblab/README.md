@@ -21,7 +21,6 @@ bomb: An executable program. If input strings are incorrect, the program will "e
 bomb.c: The source code of the bomb.
 
 
-
 <h2 id = "commands">Commands</h2>
 
 #### Using GDB
@@ -54,7 +53,6 @@ unix> objdump -d example.o
 ```
 objdump -d bomb > bomb.txt
 ```
-
 
 
 <h2 id = "part1">Part I: Normal Phases</h2>
@@ -104,11 +102,11 @@ Dump of assembler code for function phase_1:
 => 0x0000000000400ee0 <+0>:		sub    $0x8,%rsp
    0x0000000000400ee4 <+4>:		mov    $0x402400,%esi
    0x0000000000400ee9 <+9>:		callq  0x401338 <strings_not_equal>
-   0x0000000000400eee <+14>:	test   %eax,%eax
-   0x0000000000400ef0 <+16>:	je     0x400ef7 <phase_1+23>
-   0x0000000000400ef2 <+18>:	callq  0x40143a <explode_bomb>
-   0x0000000000400ef7 <+23>:	add    $0x8,%rsp
-   0x0000000000400efb <+27>:	retq   
+   0x0000000000400eee <+14>:	        test   %eax,%eax
+   0x0000000000400ef0 <+16>:	        je     0x400ef7 <phase_1+23>
+   0x0000000000400ef2 <+18>:	        callq  0x40143a <explode_bomb>
+   0x0000000000400ef7 <+23>:	        add    $0x8,%rsp
+   0x0000000000400efb <+27>:	        retq   
 End of assembler dump.
 ```
 
@@ -143,8 +141,6 @@ If you see words as follows, congratuations! The first phase has been solved!
 Phase 1 defused. How about the next one?
 ```
 
-
-
 <h3 id = "phase2">Phase 2</h3>
 
 The second phase is about loops. As phase 1, we first type some random words. Remember to set proper break points before `run`.
@@ -160,26 +156,26 @@ Dump of assembler code for function phase_2:
    0x0000000000400efe <+2>:		sub    $0x28,%rsp
    0x0000000000400f02 <+6>:		mov    %rsp,%rsi
    0x0000000000400f05 <+9>:		callq  0x40145c <read_six_numbers>
-   0x0000000000400f0a <+14>:	cmpl   $0x1,(%rsp)
-   0x0000000000400f0e <+18>:	je     0x400f30 <phase_2+52>
-   0x0000000000400f10 <+20>:	callq  0x40143a <explode_bomb>
-   0x0000000000400f15 <+25>:	jmp    0x400f30 <phase_2+52>
-   0x0000000000400f17 <+27>:	mov    -0x4(%rbx),%eax
-   0x0000000000400f1a <+30>:	add    %eax,%eax
-   0x0000000000400f1c <+32>:	cmp    %eax,(%rbx)
-   0x0000000000400f1e <+34>:	je     0x400f25 <phase_2+41>
-   0x0000000000400f20 <+36>:	callq  0x40143a <explode_bomb>
-   0x0000000000400f25 <+41>:	add    $0x4,%rbx
-   0x0000000000400f29 <+45>:	cmp    %rbp,%rbx
-   0x0000000000400f2c <+48>:	jne    0x400f17 <phase_2+27>
-   0x0000000000400f2e <+50>:	jmp    0x400f3c <phase_2+64>
-   0x0000000000400f30 <+52>:	lea    0x4(%rsp),%rbx
-   0x0000000000400f35 <+57>:	lea    0x18(%rsp),%rbp
-   0x0000000000400f3a <+62>:	jmp    0x400f17 <phase_2+27>
-   0x0000000000400f3c <+64>:	add    $0x28,%rsp
-   0x0000000000400f40 <+68>:	pop    %rbx
-   0x0000000000400f41 <+69>:	pop    %rbp
-   0x0000000000400f42 <+70>:	retq   
+   0x0000000000400f0a <+14>:	        cmpl   $0x1,(%rsp)
+   0x0000000000400f0e <+18>:	        je     0x400f30 <phase_2+52>
+   0x0000000000400f10 <+20>:	        callq  0x40143a <explode_bomb>
+   0x0000000000400f15 <+25>:	        jmp    0x400f30 <phase_2+52>
+   0x0000000000400f17 <+27>:	        mov    -0x4(%rbx),%eax
+   0x0000000000400f1a <+30>:	        add    %eax,%eax
+   0x0000000000400f1c <+32>:	        cmp    %eax,(%rbx)
+   0x0000000000400f1e <+34>:	        je     0x400f25 <phase_2+41>
+   0x0000000000400f20 <+36>:	        callq  0x40143a <explode_bomb>
+   0x0000000000400f25 <+41>:	        add    $0x4,%rbx
+   0x0000000000400f29 <+45>:	        cmp    %rbp,%rbx
+   0x0000000000400f2c <+48>:	        jne    0x400f17 <phase_2+27>
+   0x0000000000400f2e <+50>:	        jmp    0x400f3c <phase_2+64>
+   0x0000000000400f30 <+52>:	        lea    0x4(%rsp),%rbx
+   0x0000000000400f35 <+57>:	        lea    0x18(%rsp),%rbp
+   0x0000000000400f3a <+62>:	        jmp    0x400f17 <phase_2+27>
+   0x0000000000400f3c <+64>:	        add    $0x28,%rsp
+   0x0000000000400f40 <+68>:	        pop    %rbx
+   0x0000000000400f41 <+69>:	        pop    %rbp
+   0x0000000000400f42 <+70>:	        retq   
 End of assembler dump.
 ```
 
@@ -199,7 +195,6 @@ That's number 2. Keep going!
 Now we can go to phase 3.
 
 
-
 <h3 id = "phase3">Phase 3</h3>
 
 The third phase is about conditionals/switches. Type some words and use `disas`. Remember to set the break points before `run`.
@@ -213,39 +208,39 @@ Dump of assembler code for function phase_3:
 => 0x0000000000400f43 <+0>:		sub    $0x18,%rsp
    0x0000000000400f47 <+4>:		lea    0xc(%rsp),%rcx
    0x0000000000400f4c <+9>:		lea    0x8(%rsp),%rdx
-   0x0000000000400f51 <+14>:	mov    $0x4025cf,%esi
-   0x0000000000400f56 <+19>:	mov    $0x0,%eax
-   0x0000000000400f5b <+24>:	callq  0x400bf0 <__isoc99_sscanf@plt>
-   0x0000000000400f60 <+29>:	cmp    $0x1,%eax
-   0x0000000000400f63 <+32>:	jg     0x400f6a <phase_3+39>
-   0x0000000000400f65 <+34>:	callq  0x40143a <explode_bomb>
-   0x0000000000400f6a <+39>:	cmpl   $0x7,0x8(%rsp)
-   0x0000000000400f6f <+44>:	ja     0x400fad <phase_3+106>
-   0x0000000000400f71 <+46>:	mov    0x8(%rsp),%eax
-   0x0000000000400f75 <+50>:	jmpq   *0x402470(,%rax,8)
-   0x0000000000400f7c <+57>:	mov    $0xcf,%eax
-   0x0000000000400f81 <+62>:	jmp    0x400fbe <phase_3+123>
-   0x0000000000400f83 <+64>:	mov    $0x2c3,%eax
-   0x0000000000400f88 <+69>:	jmp    0x400fbe <phase_3+123>
-   0x0000000000400f8a <+71>:	mov    $0x100,%eax
-   0x0000000000400f8f <+76>:	jmp    0x400fbe <phase_3+123>
-   0x0000000000400f91 <+78>:	mov    $0x185,%eax
-   0x0000000000400f96 <+83>:	jmp    0x400fbe <phase_3+123>
-   0x0000000000400f98 <+85>:	mov    $0xce,%eax
-   0x0000000000400f9d <+90>:	jmp    0x400fbe <phase_3+123>
-   0x0000000000400f9f <+92>:	mov    $0x2aa,%eax
-   0x0000000000400fa4 <+97>:	jmp    0x400fbe <phase_3+123>
-   0x0000000000400fa6 <+99>:	mov    $0x147,%eax
-   0x0000000000400fab <+104>:	jmp    0x400fbe <phase_3+123>
-   0x0000000000400fad <+106>:	callq  0x40143a <explode_bomb>
-   0x0000000000400fb2 <+111>:	mov    $0x0,%eax
-   0x0000000000400fb7 <+116>:	jmp    0x400fbe <phase_3+123>
-   0x0000000000400fb9 <+118>:	mov    $0x137,%eax
-   0x0000000000400fbe <+123>:	cmp    0xc(%rsp),%eax
-   0x0000000000400fc2 <+127>:	je     0x400fc9 <phase_3+134>
-   0x0000000000400fc4 <+129>:	callq  0x40143a <explode_bomb>
-   0x0000000000400fc9 <+134>:	add    $0x18,%rsp
-   0x0000000000400fcd <+138>:	retq   
+   0x0000000000400f51 <+14>:	        mov    $0x4025cf,%esi
+   0x0000000000400f56 <+19>:	        mov    $0x0,%eax
+   0x0000000000400f5b <+24>:	        callq  0x400bf0 <__isoc99_sscanf@plt>
+   0x0000000000400f60 <+29>:	        cmp    $0x1,%eax
+   0x0000000000400f63 <+32>:	        jg     0x400f6a <phase_3+39>
+   0x0000000000400f65 <+34>:	        callq  0x40143a <explode_bomb>
+   0x0000000000400f6a <+39>:	        cmpl   $0x7,0x8(%rsp)
+   0x0000000000400f6f <+44>:	        ja     0x400fad <phase_3+106>
+   0x0000000000400f71 <+46>:	        mov    0x8(%rsp),%eax
+   0x0000000000400f75 <+50>:	        jmpq   *0x402470(,%rax,8)
+   0x0000000000400f7c <+57>:	        mov    $0xcf,%eax
+   0x0000000000400f81 <+62>:	        jmp    0x400fbe <phase_3+123>
+   0x0000000000400f83 <+64>:	        mov    $0x2c3,%eax
+   0x0000000000400f88 <+69>:	        jmp    0x400fbe <phase_3+123>
+   0x0000000000400f8a <+71>:	        mov    $0x100,%eax
+   0x0000000000400f8f <+76>:	        jmp    0x400fbe <phase_3+123>
+   0x0000000000400f91 <+78>:	        mov    $0x185,%eax
+   0x0000000000400f96 <+83>:	        jmp    0x400fbe <phase_3+123>
+   0x0000000000400f98 <+85>:	        mov    $0xce,%eax
+   0x0000000000400f9d <+90>:	        jmp    0x400fbe <phase_3+123>
+   0x0000000000400f9f <+92>:	        mov    $0x2aa,%eax
+   0x0000000000400fa4 <+97>:	        jmp    0x400fbe <phase_3+123>
+   0x0000000000400fa6 <+99>:	        mov    $0x147,%eax
+   0x0000000000400fab <+104>:	        jmp    0x400fbe <phase_3+123>
+   0x0000000000400fad <+106>:	        callq  0x40143a <explode_bomb>
+   0x0000000000400fb2 <+111>:	        mov    $0x0,%eax
+   0x0000000000400fb7 <+116>:	        jmp    0x400fbe <phase_3+123>
+   0x0000000000400fb9 <+118>:	        mov    $0x137,%eax
+   0x0000000000400fbe <+123>:	        cmp    0xc(%rsp),%eax
+   0x0000000000400fc2 <+127>:	        je     0x400fc9 <phase_3+134>
+   0x0000000000400fc4 <+129>:	        callq  0x40143a <explode_bomb>
+   0x0000000000400fc9 <+134>:	        add    $0x18,%rsp
+   0x0000000000400fcd <+138>:	        retq   
 End of assembler dump.
 ```
 
@@ -266,7 +261,7 @@ So propably in this phase we should input 2 intergers. The first number is store
 0x4024a0:	0x0000000000400f9f	0x0000000000400fa6
 ```
 
-Compared to the code of phase_3, the answer can be one of these 8 pairs:
+Compared to the code at these address, under different cases, different values are stored in %eax and compared with 0xc(%rsp), which is the second argument, in line `<+123>`. If they are identical, the bomb will not explode. So the answer can be one of these 8 pairs:
 
 `0 207` `1 311` `2 707` `3 256` `4 389` `5 206` `6 682` `7 327`.
 
@@ -276,8 +271,11 @@ Check our answers:
 Halfway there!
 ```
 
+<<<<<<< HEAD
 Now we can go to phase 4.
 
+=======
+>>>>>>> a7dd32d04d09733343475027388035100f378e56
 <h3 id = "phase4">Phase 4</h3>
 
 The forth phase is about recursive calls and the stack discipline. Remember to set the break points.
