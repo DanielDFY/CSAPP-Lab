@@ -276,17 +276,102 @@ Check our answers:
 Halfway there!
 ```
 
-
+Now we can go to phase 4.
 
 <h3 id = "phase4">Phase 4</h3>
 
 The forth phase is about recursive calls and the stack discipline.
 
 ```
+abc
 
+Breakpoint 1, 0x000000000040100c in phase_4 ()
+(gdb) disas
+Dump of assembler code for function phase_4:
+=> 0x000000000040100c <+0>:	sub    $0x18,%rsp
+   0x0000000000401010 <+4>:	lea    0xc(%rsp),%rcx
+   0x0000000000401015 <+9>:	lea    0x8(%rsp),%rdx
+   0x000000000040101a <+14>:	mov    $0x4025cf,%esi
+   0x000000000040101f <+19>:	mov    $0x0,%eax
+   0x0000000000401024 <+24>:	callq  0x400bf0 <__isoc99_sscanf@plt>
+   0x0000000000401029 <+29>:	cmp    $0x2,%eax
+   0x000000000040102c <+32>:	jne    0x401035 <phase_4+41>
+   0x000000000040102e <+34>:	cmpl   $0xe,0x8(%rsp)
+   0x0000000000401033 <+39>:	jbe    0x40103a <phase_4+46>
+   0x0000000000401035 <+41>:	callq  0x40143a <explode_bomb>
+   0x000000000040103a <+46>:	mov    $0xe,%edx
+   0x000000000040103f <+51>:	mov    $0x0,%esi
+   0x0000000000401044 <+56>:	mov    0x8(%rsp),%edi
+   0x0000000000401048 <+60>:	callq  0x400fce <func4>
+   0x000000000040104d <+65>:	test   %eax,%eax
+   0x000000000040104f <+67>:	jne    0x401058 <phase_4+76>
+   0x0000000000401051 <+69>:	cmpl   $0x0,0xc(%rsp)
+   0x0000000000401056 <+74>:	je     0x40105d <phase_4+81>
+   0x0000000000401058 <+76>:	callq  0x40143a <explode_bomb>
+   0x000000000040105d <+81>:	add    $0x18,%rsp
+   0x0000000000401061 <+85>:	retq   
+End of assembler dump.
 ```
 
+Similar to phase 3, first we can check the address 0x4025cf at line `<+14>`.
 
+```
+(gdb) x/s 0x4025cf
+0x4025cf:						"%d %d"
+```
+
+Together with line `<+29>` and line `<+32>` we know the program requires 2 integers. Then the program set the first number and 0 as two arguments and call func4. Let's look up for func4 in the file we created, which is bomb.txt.
+
+```
+0000000000400fce <func4>:
+  400fce:	48 83 ec 08          	sub    $0x8,%rsp
+  400fd2:	89 d0                	mov    %edx,%eax
+  400fd4:	29 f0                	sub    %esi,%eax
+  400fd6:	89 c1                	mov    %eax,%ecx
+  400fd8:	c1 e9 1f             	shr    $0x1f,%ecx
+  400fdb:	01 c8                	add    %ecx,%eax
+  400fdd:	d1 f8                	sar    %eax
+  400fdf:	8d 0c 30             	lea    (%rax,%rsi,1),%ecx
+  400fe2:	39 f9                	cmp    %edi,%ecx
+  400fe4:	7e 0c                	jle    400ff2 <func4+0x24>
+  400fe6:	8d 51 ff             	lea    -0x1(%rcx),%edx
+  400fe9:	e8 e0 ff ff ff       	callq  400fce <func4>
+  400fee:	01 c0                	add    %eax,%eax
+  400ff0:	eb 15                	jmp    401007 <func4+0x39>
+  400ff2:	b8 00 00 00 00       	mov    $0x0,%eax
+  400ff7:	39 f9                	cmp    %edi,%ecx
+  400ff9:	7d 0c                	jge    401007 <func4+0x39>
+  400ffb:	8d 71 01             	lea    0x1(%rcx),%esi
+  400ffe:	e8 cb ff ff ff       	callq  400fce <func4>
+  401003:	8d 44 00 01          	lea    0x1(%rax,%rax,1),%eax
+  401007:	48 83 c4 08          	add    $0x8,%rsp
+  40100b:	c3                   	retq   
+```
+
+After analyze this function, we can know that it's equivalent to codes in C format as follows:
+
+```C
+int func4(int n1, int n2) {
+    int temp = (31/(pow(2, n1)) + n1)/2 + n2;
+    if (n1 > temp) {
+        return 2*func4(n1 - 1, n2);
+    }
+    else if (n1 < temp) {
+        return 2*func4(n1 + 1, n2) + 1;
+    }
+    else {
+        return 0;
+    }
+}
+```
+
+Line `<+65>` requires the return value of func4 is 0, so we can figure out that the first number we should input is 3. Line `<+65>` suggests that the second number should be 0. Therefore, our answer can be `3 0`. Now check the answer:
+
+```
+So you got that one. Try this one.
+```
+
+Let's go to phase 5.
 
 
 
