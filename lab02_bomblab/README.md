@@ -261,7 +261,7 @@ So propably in this phase we should input 2 intergers. The first number is store
 0x4024a0:	0x0000000000400f9f	0x0000000000400fa6
 ```
 
-Compared to the code at these address, under different cases, different values are stored in %eax and compared with 0xc(%rsp), which is the second argument, in line `+123`. If they are identical, the bomb will not explode. So the answer can be one of these 8 pairs:
+Compared to the code at these address, under different cases, different values are stored in %eax and compared with 0xc(%rsp), which is the second argument, in line `<+123>`. If they are identical, the bomb will not explode. So the answer can be one of these 8 pairs:
 
 `0 207` `1 311` `2 707` `3 256` `4 389` `5 206` `6 682` `7 327`.
 
