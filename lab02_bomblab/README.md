@@ -490,7 +490,7 @@ Dump of assembler code for function phase_6:
    0x0000000000401132 <+62>:	mov    %r12d,%ebx
    0x0000000000401135 <+65>:	movslq %ebx,%rax
    0x0000000000401138 <+68>:	mov    (%rsp,%rax,4),%eax
-   0x000000000040113b <+71>:	cmp    %eax,0x0(%rbp)				# if the number == 0
+   0x000000000040113b <+71>:	cmp    %eax,0x0(%rbp)			# if the number == 0
    0x000000000040113e <+74>:	jne    0x401145 <phase_6+81>
    0x0000000000401140 <+76>:	callq  0x40143a <explode_bomb>
    0x0000000000401145 <+81>:	add    $0x1,%ebx
@@ -508,9 +508,9 @@ Dump of assembler code for function phase_6:
    0x000000000040115b <+103>:	mov    $0x7,%ecx
    0x0000000000401160 <+108>:	mov    %ecx,%edx
    0x0000000000401162 <+110>:	sub    (%rax),%edx
-   0x0000000000401164 <+112>:	mov    %edx,(%rax)					# input[i] = 7 - input[i]
-   0x0000000000401166 <+114>:	add    $0x4,%rax					# next number
-   0x000000000040116a <+118>:	cmp    %rsi,%rax					# if overflow
+   0x0000000000401164 <+112>:	mov    %edx,(%rax)			# input[i] = 7 - input[i]
+   0x0000000000401166 <+114>:	add    $0x4,%rax			# next number
+   0x000000000040116a <+118>:	cmp    %rsi,%rax			# if overflow
    0x000000000040116d <+121>:	jne    0x401160 <phase_6+108>
 ```
 
@@ -519,15 +519,15 @@ Dump of assembler code for function phase_6:
 ```
    0x000000000040116f <+123>:	mov    $0x0,%esi
    0x0000000000401174 <+128>:	jmp    0x401197 <phase_6+163>
-   0x0000000000401176 <+130>:	mov    0x8(%rdx),%rdx				# fine the `exc`th node
+   0x0000000000401176 <+130>:	mov    0x8(%rdx),%rdx			# fine the `exc`th node
    0x000000000040117a <+134>:	add    $0x1,%eax
    0x000000000040117d <+137>:	cmp    %ecx,%eax
    0x000000000040117f <+139>:	jne    0x401176 <phase_6+130>
    0x0000000000401181 <+141>:	jmp    0x401188 <phase_6+148>
    0x0000000000401183 <+143>:	mov    $0x6032d0,%edx
    0x0000000000401188 <+148>:	mov    %rdx,0x20(%rsp,%rsi,2)		# put the node at specified position
-   0x000000000040118d <+153>:	add    $0x4,%rsi					# next input number
-   0x0000000000401191 <+157>:	cmp    $0x18,%rsi					# if overflow
+   0x000000000040118d <+153>:	add    $0x4,%rsi			# next input number
+   0x0000000000401191 <+157>:	cmp    $0x18,%rsi			# if overflow
    0x0000000000401195 <+161>:	je     0x4011ab <phase_6+183>
    0x0000000000401197 <+163>:	mov    (%rsp,%rsi,1),%ecx
    0x000000000040119a <+166>:	cmp    $0x1,%ecx
@@ -567,22 +567,22 @@ struct {
    0x00000000004011b5 <+193>:	lea    0x50(%rsp),%rsi
    0x00000000004011ba <+198>:	mov    %rbx,%rcx
    0x00000000004011bd <+201>:	mov    (%rax),%rdx
-   0x00000000004011c0 <+204>:	mov    %rdx,0x8(%rcx)				# set the pointer to the next
+   0x00000000004011c0 <+204>:	mov    %rdx,0x8(%rcx)		        # set the pointer to the next
    0x00000000004011c4 <+208>:	add    $0x8,%rax
    0x00000000004011c8 <+212>:	cmp    %rsi,%rax
    0x00000000004011cb <+215>:	je     0x4011d2 <phase_6+222>
    0x00000000004011cd <+217>:	mov    %rdx,%rcx
    0x00000000004011d0 <+220>:	jmp    0x4011bd <phase_6+201>
-   0x00000000004011d2 <+222>:	movq   $0x0,0x8(%rdx)				# the last pointer is NULL
+   0x00000000004011d2 <+222>:	movq   $0x0,0x8(%rdx)		        # the last pointer is NULL
 ```
 
 &uarr; Rebuild the linked list
 
 ```
-   0x00000000004011da <+230>:	mov    $0x5,%ebp					# counter
+   0x00000000004011da <+230>:	mov    $0x5,%ebp			# counter
    0x00000000004011df <+235>:	mov    0x8(%rbx),%rax
    0x00000000004011e3 <+239>:	mov    (%rax),%eax
-   0x00000000004011e5 <+241>:	cmp    %eax,(%rbx)					# if decreasing
+   0x00000000004011e5 <+241>:	cmp    %eax,(%rbx)		        # if decreasing
    0x00000000004011e7 <+243>:	jge    0x4011ee <phase_6+250>
    0x00000000004011e9 <+245>:	callq  0x40143a <explode_bomb>
    0x00000000004011ee <+250>:	mov    0x8(%rbx),%rbx
