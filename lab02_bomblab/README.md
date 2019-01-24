@@ -11,6 +11,7 @@
     * [phase 4](#phase4)
     * [phase 5](#phase5)
     * [phase 6](#phase6)
+* [Part II: Secret Phase](#part2)
 
 <h2 id = "file">File introduction</h2>
 
@@ -610,3 +611,4 @@ Check out answer:
 Congratularions! You've defused the bomb!
 ```
 
+<h2 id = "part2">Part II: Secret Phase</h2>
