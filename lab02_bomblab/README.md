@@ -624,14 +624,14 @@ In the file we created, there is a secret phase under phase 6.
   401252:	48 89 c7             	mov    %rax,%rdi
   401255:	e8 76 f9 ff ff       	callq  400bd0 <strtol@plt>
   40125a:	48 89 c3             	mov    %rax,%rbx
-  40125d:	8d 40 ff             	lea    -0x1(%rax),%eax			# if input - 1 <= 1000
+  40125d:	8d 40 ff             	lea    -0x1(%rax),%eax		# if input - 1 <= 1000
   401260:	3d e8 03 00 00       	cmp    $0x3e8,%eax
   401265:	76 05                	jbe    40126c <secret_phase+0x2a>
   401267:	e8 ce 01 00 00       	callq  40143a <explode_bomb>
   40126c:	89 de                	mov    %ebx,%esi
   40126e:	bf f0 30 60 00       	mov    $0x6030f0,%edi
-  401273:	e8 8c ff ff ff       	callq  401204 <fun7>			# call <fun7>
-  401278:	83 f8 02             	cmp    $0x2,%eax				# if return value == 2
+  401273:	e8 8c ff ff ff       	callq  401204 <fun7>		# call <fun7>
+  401278:	83 f8 02             	cmp    $0x2,%eax		# if return value == 2
   40127b:	74 05                	je     401282 <secret_phase+0x40>
   40127d:	e8 b8 01 00 00       	callq  40143a <explode_bomb>
   401282:	bf 38 24 40 00       	mov    $0x402438,%edi
@@ -650,15 +650,15 @@ Keep searching, we can find that it is called in function `<phase_defused>`.
   4015cf:	00 00 
   4015d1:	48 89 44 24 68       	mov    %rax,0x68(%rsp)
   4015d6:	31 c0                	xor    %eax,%eax
-  4015d8:	83 3d 81 21 20 00 06 	cmpl   $0x6,0x202181(%rip)        # 603760 <num_input_strings>		# if all 6 phases are solved
-  4015df:	75 5e                	jne    40163f <phase_defused+0x7b>
+  4015d8:	83 3d 81 21 20 00 06 	cmpl   $0x6,0x202181(%rip)        # 603760 <num_input_strings>
+  4015df:	75 5e                	jne    40163f <phase_defused+0x7b># if all 6 phases are solved
   4015e1:	4c 8d 44 24 10       	lea    0x10(%rsp),%r8
   4015e6:	48 8d 4c 24 0c       	lea    0xc(%rsp),%rcx
   4015eb:	48 8d 54 24 08       	lea    0x8(%rsp),%rdx
   4015f0:	be 19 26 40 00       	mov    $0x402619,%esi
   4015f5:	bf 70 38 60 00       	mov    $0x603870,%edi
   4015fa:	e8 f1 f5 ff ff       	callq  400bf0 <__isoc99_sscanf@plt>
-  4015ff:	83 f8 03             	cmp    $0x3,%eax		# if there are 3 arguments
+  4015ff:	83 f8 03             	cmp    $0x3,%eax                  # if there are 3 arguments
   401602:	75 31                	jne    401635 <phase_defused+0x71>
   401604:	be 22 26 40 00       	mov    $0x402622,%esi
   401609:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
