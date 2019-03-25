@@ -77,7 +77,7 @@ int logicalShift(int x, int n) {
 ```c
 int bitCount(int x) {
 	int mask1_tmp = (0x55 << 8) | 0x55;
-	int mask1 = (mask1_tmp << 16) | mask1_tmp
+	int mask1 = (mask1_tmp << 16) | mask1_tmp;
 	
 	int mask2_tmp = (0x33 << 8) | 0x33;
 	int mask2 = (mask2_tmp << 16) | mask2_tmp;
