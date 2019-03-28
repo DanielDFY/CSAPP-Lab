@@ -1,2 +1,2 @@
-# CSAPP-Lab
+# CSAPP-Labs
 Solutions for CSAPP labs.
