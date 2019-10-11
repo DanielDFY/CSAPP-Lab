@@ -13,7 +13,6 @@
   * [phase 5](#phase5)
 
 <h2 id = "file">File introduction</h2>
-
 README.txt: A file describing the contents of the directory
 
 ctarget: An executable program vulnerable to code-injection attacks
@@ -48,7 +47,6 @@ you should pass “ef be ad de” to HEX2RAW (note the reversal required for lit
 ordering).
 
 <h2 id = "commands">Commands</h2>
-
 #### Using HEX2RAW
 
 ```shell
@@ -65,7 +63,7 @@ unix> gdb ctarget                                        # use gdb to run ctarge
 (gdb) x/<n/f/u> <addr>                                   # print the value stored at the address
 ```
 
-More usages can be found in [gdb-ref](./gdb-ref.md)
+More usages can be found in [gdb-ref](../gdb-ref.md)
 
 #### Generating byte codes
 
@@ -75,12 +73,10 @@ unix> objdump -d example.o
 ```
 
 <h2 id = "part1">Part I: Code Injection Attacks</h2>
-
 >For the first three phases, your exploit strings will attack CTARGET. This program is set up in a way that
 >the stack positions will be consistent from one run to the next and so that data on the stack can be treated as executable code. These features make the program vulnerable to attacks where the exploit strings contain the byte encodings of executable code.
 
 <h3 id = "phase1">Phase 1</h3>
-
 Function getbuf is called within CTARGET by a function test having the following C code:
 
 ```c
@@ -198,7 +194,6 @@ NICE JOB!
 ```
 
 <h3 id = "phase2">Phase 2</h3>
-
 Phase 2 involves injecting a small amount of code as part of your exploit string.
 Within the file ctarget there is code for a function touch2 having the following C representation:
 
@@ -346,7 +341,6 @@ NICE JOB!
 ```
 
 <h3 id = "phase3">Phase 3</h3>
-
 Within the file ctarget there is code for functions hexmatch and touch3 having the following C representations:
 
 ```c
@@ -441,7 +435,6 @@ NICE JOB!
 ```
 
 <h2 id = "part2">Part II: Return-Oriented Programming</h2>
-
 > Performing code-injection attacks on program RTARGET is much more difficult than it is for CTARGET,
 > because it uses two techniques to thwart such attacks:
 >
@@ -738,7 +731,6 @@ NICE JOB!
 </table>
 
 <h3 id = "phase4">Phase 4</h3>
-
 This phase is the same as phase 2 except using different method to call touch2 and pass the cookie. 
 
 All the gadgets we need should be found in the region of the code for rtarget demarcated by the
@@ -807,7 +799,6 @@ NICE JOB!
 ```
 
 <h3 id = "phase5">Phase 5</h3>
-
 This phase is similar to the combination of phase 3 and phase 4 except we are required 8 gadgets (not all of which are unique). We need to pass the address stored in %rsp to %rdi first, and set the value of %rax as the offset of the address of our cookie string in the stack. Then copy it to %esi. The sum of %rdi and %rsi will be the address that stores the cookie string.
 
 The file can be create according to codes below

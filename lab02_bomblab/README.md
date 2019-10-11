@@ -14,7 +14,6 @@
 * [Part II: Secret Phase](#part2)
 
 <h2 id = "file">File introduction</h2>
-
 README.txt: A descriptive file
 
 bomb: An executable program. If input strings are incorrect, the program will "explode!"
@@ -23,7 +22,6 @@ bomb.c: The source code of the bomb.
 
 
 <h2 id = "commands">Commands</h2>
-
 #### Using GDB
 
 ```
@@ -39,7 +37,7 @@ unix> gdb bomb                    # use gdb to run bomb
 (gdb) set args <file>             # read arguments from the file
 ```
 
-More usages can be found in [gdb-ref](./gdb-ref.md)
+More usages can be found in [gdb-ref](../gdb-ref.md)
 
 #### Generating byte codes
 
@@ -57,7 +55,6 @@ objdump -d bomb > bomb.txt
 
 
 <h2 id = "part1">Part I: Normal Phases</h2>
-
 First we can decompile the executable program.
 
 ```shell
@@ -67,7 +64,6 @@ objdump -d bomb > bomb.txt
 In `bomb.txt` we can find `<main>`. We can see there are 6 phases in the main code. Each phase requires us to input  something to solve. If the input string is incorrect, the program will jump to `<explode_bomb>` and explode the bomb. Now lets solve these phases respectively.
 
 <h3 id = "phase1">Phase 1</h3>
-
 The first phase is about string comparision. We are supposed to enter the GDB mode first.
 
 ```shell
@@ -143,7 +139,6 @@ Phase 1 defused. How about the next one?
 ```
 
 <h3 id = "phase2">Phase 2</h3>
-
 The second phase is about loops. As phase 1, we first type some random words. Remember to set proper break points before `run`.
 
 ```
@@ -197,7 +192,6 @@ Now we can go to phase 3.
 
 
 <h3 id = "phase3">Phase 3</h3>
-
 The third phase is about conditionals/switches. Type some words and use `disas`. Remember to set the break points before `run`.
 
 ```
@@ -278,7 +272,6 @@ Now we can go to phase 4.
 
 
 <h3 id = "phase4">Phase 4</h3>
-
 The forth phase is about recursive calls and the stack discipline. Remember to set the break points.
 
 ```
@@ -375,7 +368,6 @@ Let's go to phase 5.
 
 
 <h3 id = "phase5">Phase 5</h3>
-
 The fifth phase is about pointers. As usual first set break points before `run` and then use `disas`. 
 
 ```
@@ -449,7 +441,6 @@ Good work! On the next...
 
 
 <h3 id = "phase6">Phase 6</h3>
-
 The sixth phase is about linked lists/pointers/structs. Let's read the codes part by part.
 
 ```
@@ -612,7 +603,6 @@ Congratularions! You've defused the bomb!
 ```
 
 <h2 id = "part2">Part II: Secret Phase</h2>
-
 In the file we created, there is a secret phase under phase 6.
 
 ``` 
