@@ -1,7 +1,5 @@
 # Bomb Lab
 
-## Table of contents
-
 * [File Introduction](#file)
 * [Commands](#commands)
 * [Part I: Normal Phases](#part1)
