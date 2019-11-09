@@ -46,7 +46,7 @@ typedef struct ELE {
           call    main            # Execute main program
           halt                    # Terminate program
           
-          ...			  # Todo
+          ...			# Todo
           
   # Stack starts here and grows to lower addresses
           .pos 0x200
@@ -116,8 +116,8 @@ typedef struct ELE {
   ```
   Stopped in 36 steps at PC = 0x13.  Status 'HLT', CC Z=1 S=0 O=0
   Changes to registers:
-  %rax:		0x0000000000000000	0x0000000000000cba
-  %rsp:		0x0000000000000000	0x0000000000000200
+  %rax:	0x0000000000000000	0x0000000000000cba
+  %rsp:	0x0000000000000000	0x0000000000000200
   
   Changes to memory:
   0x01e8:	0x0000000000000000	0x000000000000005d
@@ -133,11 +133,11 @@ typedef struct ELE {
   long rsum_list(list_ptr ls)
   {
       if (!ls)
-  				return 0;
+  	return 0;
       else {
-  				long val = ls->val;
-  				long rest = rsum_list(ls->next);
-  				return val + rest;
+  	long val = ls->val;
+  	long rest = rsum_list(ls->next);
+  	return val + rest;
       }
   }
   ```
@@ -198,10 +198,10 @@ typedef struct ELE {
   {
       long result = 0;
       while (len > 0) {
-  		long val = *src++;
-  		*dest++ = val;
-  		result ^= val;
-  		len--;
+  	long val = *src++;
+  	*dest++ = val;
+  	result ^= val;
+  	len--;
       }
       return result;
   }
@@ -277,8 +277,8 @@ typedef struct ELE {
   ```
   Stopped in 48 steps at PC = 0x13.  Status 'HLT', CC Z=1 S=0 O=0
   Changes to registers:
-  %rax:		0x0000000000000000	0x0000000000000cba
-  %rsp:		0x0000000000000000	0x0000000000000200
+  %rax:	0x0000000000000000	0x0000000000000cba
+  %rsp:	0x0000000000000000	0x0000000000000200
   
   Changes to memory:
   0x0030:	0x0000000000000111	0x000000000000000a
@@ -420,10 +420,10 @@ It's easy to know that we don't need `xorq %rax,%rax` because the register is in
 Loop:	
 		mrmovq 		(%rdi), %r10		# read val from src...
 		iaddq		$8, %rdi		# src++
-		rmmovq 	%r10, (%rsi)			# ...and store it to dst
+		rmmovq 		%r10, (%rsi)		# ...and store it to dst
 		andq 		%r10, %r10		# val <= 0 ?
 		jle 		Npos			# if so, goto Npos:
-		iaddq 	$1, %rax			# count++
+		iaddq 		$1, %rax		# count++
 Npos:	
 		iaddq		$8, %rsi		# drc++
 		iaddq		$-1, %rdx		# len--, len > 0 ?
@@ -586,5 +586,5 @@ ncopy.yo length = 998 bytes
 68/68 pass correctness test
 
 Average CPE	7.49
-Score	60.0/60.0
+Score		60.0/60.0
 ```
