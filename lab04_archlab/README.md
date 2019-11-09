@@ -30,8 +30,8 @@ typedef struct ELE {
   {
       long val = 0;
       while (ls) {
-  				val += ls->val;
-  				ls = ls->next;
+  	val += ls->val;
+  	ls = ls->next;
       }
       return val;
   }
