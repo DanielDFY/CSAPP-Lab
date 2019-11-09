@@ -46,7 +46,7 @@ typedef struct ELE {
           call    main            # Execute main program
           halt                    # Terminate program
           
-          ...											# Todo
+          ...			  # Todo
           
   # Stack starts here and grows to lower addresses
           .pos 0x200
@@ -116,8 +116,8 @@ typedef struct ELE {
   ```
   Stopped in 36 steps at PC = 0x13.  Status 'HLT', CC Z=1 S=0 O=0
   Changes to registers:
-  %rax:	0x0000000000000000	0x0000000000000cba
-  %rsp:	0x0000000000000000	0x0000000000000200
+  %rax:		0x0000000000000000	0x0000000000000cba
+  %rsp:		0x0000000000000000	0x0000000000000200
   
   Changes to memory:
   0x01e8:	0x0000000000000000	0x000000000000005d
@@ -198,10 +198,10 @@ typedef struct ELE {
   {
       long result = 0;
       while (len > 0) {
-  				long val = *src++;
-  				*dest++ = val;
-  				result ^= val;
-  				len--;
+  		long val = *src++;
+  		*dest++ = val;
+  		result ^= val;
+  		len--;
       }
       return result;
   }
@@ -277,8 +277,8 @@ typedef struct ELE {
   ```
   Stopped in 48 steps at PC = 0x13.  Status 'HLT', CC Z=1 S=0 O=0
   Changes to registers:
-  %rax:	0x0000000000000000	0x0000000000000cba
-  %rsp:	0x0000000000000000	0x0000000000000200
+  %rax:		0x0000000000000000	0x0000000000000cba
+  %rsp:		0x0000000000000000	0x0000000000000200
   
   Changes to memory:
   0x0030:	0x0000000000000111	0x000000000000000a
@@ -390,24 +390,24 @@ In this implementation, the modification to `pipe-full.hcl` is nearly the same a
 ```
 # You can modify this portion
 		# Loop header
-		xorq		%rax,%rax			# count = 0;
-		andq 		%rdx,%rdx			# len <= 0?
-		jle 		Done					# if so, goto Done:
+		xorq		%rax,%rax		# count = 0;
+		andq 		%rdx,%rdx		# len <= 0?
+		jle 		Done			# if so, goto Done:
 Loop:	
-		mrmovq 	(%rdi), %r10	# read val from src...
-		rmmovq 	%r10, (%rsi)	# ...and store it to dst
+		mrmovq 		(%rdi), %r10		# read val from src...
+		rmmovq 		%r10, (%rsi)		# ...and store it to dst
 		andq 		%r10, %r10		# val <= 0?
-		jle 		Npos					# if so, goto Npos:
-		irmovq 	$1, %r10
+		jle 		Npos			# if so, goto Npos:
+		irmovq 		$1, %r10
 		addq 		%r10, %rax		# count++
 Npos:	
-		irmovq 	$1, %r10
+		irmovq 		$1, %r10
 		subq 		%r10, %rdx		# len--
-		irmovq 	$8, %r10
+		irmovq 		$8, %r10
 		addq 		%r10, %rdi		# src++
 		addq 		%r10, %rsi		# dst++
-		andq 		%rdx,%rdx			# len > 0?
-		jg 			Loop					# if so, goto Loop:
+		andq 		%rdx,%rdx		# len > 0?
+		jg 		Loop			# if so, goto Loop:
 ```
 
 It's easy to know that we don't need `xorq %rax,%rax` because the register is initialized to store 0. And we can use `iaddq` instruction we added into `PIPE` to save instructions. Solving hazards by reordering also helps. Then we may get following code:
@@ -415,20 +415,20 @@ It's easy to know that we don't need `xorq %rax,%rax` because the register is in
 ```
 # You can modify this portion
 		# Loop header
-		andq 		%rdx,%rdx			# len > 0 ?
-		jmp 		Test					# goto Test:
+		andq 		%rdx,%rdx		# len > 0 ?
+		jmp 		Test			# goto Test:
 Loop:	
-		mrmovq 	(%rdi), %r10	# read val from src...
-		iaddq		$8, %rdi			# src++
-		rmmovq 	%r10, (%rsi)	# ...and store it to dst
+		mrmovq 		(%rdi), %r10		# read val from src...
+		iaddq		$8, %rdi		# src++
+		rmmovq 	%r10, (%rsi)			# ...and store it to dst
 		andq 		%r10, %r10		# val <= 0 ?
-		jle 		Npos					# if so, goto Npos:
+		jle 		Npos			# if so, goto Npos:
 		iaddq 	$1, %rax			# count++
 Npos:	
-		iaddq		$8, %rsi			# drc++
-		iaddq		$-1, %rdx			# len--, len > 0 ?
+		iaddq		$8, %rsi		# drc++
+		iaddq		$-1, %rdx		# len--, len > 0 ?
 Test:
-		jg 			Loop					# if so, goto Loop:
+		jg 		Loop			# if so, goto Loop:
 ```
 
 But all these effors are too powerless to get us out of 0 points.
@@ -437,26 +437,26 @@ To improve the performance, we can try to expand the loop to reduce the cost on 
 
 ```
 Loop1:
-		mrmovq	(%rdi), %r8		# read val from src...
-		mrmovq	8(%rdi), %r9	# read next val from src...
-		rmmovq	%r8, (%rsi)		# store val to dst
-		andq		%r8, %r8			# val <= 0 ?
-		jle			Loop2					# if so, goto Loop2:
-		iaddq		$1, %rax			# count++
+		mrmovq		(%rdi), %r8		# read val from src...
+		mrmovq		8(%rdi), %r9		# read next val from src...
+		rmmovq		%r8, (%rsi)		# store val to dst
+		andq		%r8, %r8		# val <= 0 ?
+		jle		Loop2			# if so, goto Loop2:
+		iaddq		$1, %rax		# count++
 Loop2:
-		mrmovq	16(%rdi), %r8	# read val from src...
-		rmmovq	%r9, 8(%rsi)	# store val to dst
-		andq		%r9, %r9			# val <= 0 ?
-		jle			Loop3					# if so, goto Loop3:
-		iaddq		$1, %rax			# count++
+		mrmovq		16(%rdi), %r8		# read val from src...
+		rmmovq		%r9, 8(%rsi)		# store val to dst
+		andq		%r9, %r9		# val <= 0 ?
+		jle		Loop3			# if so, goto Loop3:
+		iaddq		$1, %rax		# count++
 
 ...
 
 Loop:	
-		iaddq		$8 * x, %rdi	# src += 8 * x for x loop expanded
-		iaddq		$8 * x, %rsi	# dst += 8 * x for x loop expanded
-		iaddq		$-, %rdx			# len >= x ?
-		jge			Loop1					# if so, goto Loop1
+		iaddq		$8 * x, %rdi		# src += 8 * x for x loop expanded
+		iaddq		$8 * x, %rsi		# dst += 8 * x for x loop expanded
+		iaddq		$-x, %rdx		# len >= x ?
+		jge		Loop1			# if so, goto Loop1
 ```
 
 The more we expand, we may expect higher performance. But the degree we can expand the loop is limited by the 1000-byte requirement.
@@ -472,10 +472,10 @@ When the program jumps from the binary tree to the expanded loop, if the compari
 Finally the structure of the binary tree can be designed as follows:
 
 ```
-					 3
+	   3
          /   \
         /     \
-			 2       6
+       2       6
       / \     / \
      1   0   /   \
             5     8
@@ -483,28 +483,28 @@ Finally the structure of the binary tree can be designed as follows:
           4     7   9
 # binary tree for remainder check
 Root:
-		iaddq		$7, %rdx			# len - 3 = ?
-		jl			L							# len < 3, goto left child
-		jg			R							# len > 3, goto right child
-		je			R3						# len = 3, goto remainder 3
+		iaddq		$7, %rdx		# len - 3 = ?
+		jl		L			# len < 3, goto left child
+		jg		R			# len > 3, goto right child
+		je		R3			# len = 3, goto remainder 3
 L:								
-		iaddq		$2, %rdx			# len - 1 = ?
-		je			R1						# len = 1, goto remainder 1
-		iaddq		$-1, %rdx			# len - 2 = ？
-		je			R2						# len = 2, goto remainder 2
-		ret										# len = 0, return
+		iaddq		$2, %rdx		# len - 1 = ?
+		je		R1			# len = 1, goto remainder 1
+		iaddq		$-1, %rdx		# len - 2 = ？
+		je		R2			# len = 2, goto remainder 2
+		ret					# len = 0, return
 R:
-		iaddq		$-3, %rdx			# len - 6 = ?
-		jg			RR						# len > 6, goto right child
-		je			R6						# len = 6, goto remainder 6
+		iaddq		$-3, %rdx		# len - 6 = ?
+		jg		RR			# len > 6, goto right child
+		je		R6			# len = 6, goto remainder 6
 RL:
-		iaddq		$1, %rdx			# len - 5 = ?
-		je			R5						# len = 5, goto remainder 5
-		jmp			R4						# len = 4, goto remainder 4
+		iaddq		$1, %rdx		# len - 5 = ?
+		je		R5			# len = 5, goto remainder 5
+		jmp		R4			# len = 4, goto remainder 4
 RR:
-		iaddq		$-2, %rdx			# len - 8 = ?
-		je			R8						# len = 8, goto remainder 8
-		jl			R7						# len = 7, goto remainder 7
+		iaddq		$-2, %rdx		# len - 8 = ?
+		je		R8			# len = 8, goto remainder 8
+		jl		R7			# len = 7, goto remainder 7
 R9:
 	...
 ```
@@ -515,67 +515,67 @@ Thus the descending expanded loop can remove nearly all the bubbles created by h
 
 ```
 R9:
-		mrmovq 	64(%rdi), %r10	# read val from src...
-		rmmovq 	%r10, 64(%rsi)	# can not remove bubble here
-		andq 		%r10, %r10			# val <= 0 ?
+		mrmovq 		64(%rdi), %r10		# read val from src...
+		rmmovq 		%r10, 64(%rsi)		# can not remove bubble here
+		andq 		%r10, %r10		# val <= 0 ?
 R8:
-		mrmovq 	56(%rdi), %r10	# read val from src...
-		jle			R8Npos					# if val <= 0, gotp R8Npos:
-		iaddq		$1, %rax				# count++
+		mrmovq 		56(%rdi), %r10		# read val from src...
+		jle		R8Npos			# if val <= 0, gotp R8Npos:
+		iaddq		$1, %rax		# count++
 R8Npos:
-		rmmovq 	%r10, 56(%rsi)
-		andq 		%r10, %r10			# val <= 0 ?
+		rmmovq 		%r10, 56(%rsi)
+		andq 		%r10, %r10		# val <= 0 ?
 R7:
-		mrmovq 	48(%rdi), %r10	# read val from src...
-		jle			R7Npos					# if val <= 0, gotp R7Npos:
-		iaddq		$1, %rax				# count++
+		mrmovq 		48(%rdi), %r10		# read val from src...
+		jle		R7Npos			# if val <= 0, gotp R7Npos:
+		iaddq		$1, %rax		# count++
 R7Npos:
-		rmmovq 	%r10, 48(%rsi)
-		andq 		%r10, %r10			# val <= 0 ?
+		rmmovq 		%r10, 48(%rsi)
+		andq 		%r10, %r10		# val <= 0 ?
 R6:
-		mrmovq 	40(%rdi), %r10	# read val from src...
-		jle			R6Npos					# if val <= 0, gotp R6Npos:
-		iaddq		$1, %rax				# count++
+		mrmovq 		40(%rdi), %r10		# read val from src...
+		jle		R6Npos			# if val <= 0, gotp R6Npos:
+		iaddq		$1, %rax		# count++
 R6Npos:
-		rmmovq 	%r10, 40(%rsi)
-		andq 		%r10, %r10			# val <= 0 ?
+		rmmovq 		%r10, 40(%rsi)
+		andq 		%r10, %r10		# val <= 0 ?
 R5:
-		mrmovq 	32(%rdi), %r10	# read val from src...
-		jle			R5Npos					# if val <= 0, gotp R5Npos:
-		iaddq		$1, %rax				# count++
+		mrmovq 		32(%rdi), %r10		# read val from src...
+		jle		R5Npos			# if val <= 0, gotp R5Npos:
+		iaddq		$1, %rax		# count++
 R5Npos:
-		rmmovq 	%r10, 32(%rsi)
-		andq 		%r10, %r10			# val <= 0 ?
+		rmmovq 		%r10, 32(%rsi)
+		andq 		%r10, %r10		# val <= 0 ?
 R4:
-		mrmovq 	24(%rdi), %r10	# read val from src...
-		jle			R4Npos					# if val <= 0, gotp R4Npos:
-		iaddq		$1, %rax				# count++
+		mrmovq 		24(%rdi), %r10		# read val from src...
+		jle		R4Npos			# if val <= 0, gotp R4Npos:
+		iaddq		$1, %rax		# count++
 R4Npos:
-		rmmovq 	%r10, 24(%rsi)
-		andq 		%r10, %r10			# val <= 0 ?
+		rmmovq 		%r10, 24(%rsi)
+		andq 		%r10, %r10		# val <= 0 ?
 R3:
-		mrmovq 	16(%rdi), %r10	# read val from src...
-		jle			R3Npos					# if val <= 0, gotp R3Npos:
-		iaddq		$1, %rax				# count++
+		mrmovq 		16(%rdi), %r10		# read val from src...
+		jle		R3Npos			# if val <= 0, gotp R3Npos:
+		iaddq		$1, %rax		# count++
 R3Npos:
-		rmmovq 	%r10, 16(%rsi)
-		andq 		%r10, %r10			# val <= 0 ?
+		rmmovq 		%r10, 16(%rsi)
+		andq 		%r10, %r10		# val <= 0 ?
 R2:
-		mrmovq 	8(%rdi), %r10		# read val from src...
-		jle			R2Npos					# if val <= 0, gotp R2Npos:
-		iaddq		$1, %rax				# count++
+		mrmovq 		8(%rdi), %r10		# read val from src...
+		jle		R2Npos			# if val <= 0, gotp R2Npos:
+		iaddq		$1, %rax		# count++
 R2Npos:
-		rmmovq 	%r10, 8(%rsi)
-		andq 		%r10, %r10			# val <= 0 ?
+		rmmovq 		%r10, 8(%rsi)
+		andq 		%r10, %r10		# val <= 0 ?
 R1:
-		mrmovq 	(%rdi), %r10		# read val from src...
-		jle			R1Npos					# if val <= 0, gotp R1Npos:
-		iaddq		$1, %rax				# count++
+		mrmovq 		(%rdi), %r10		# read val from src...
+		jle		R1Npos			# if val <= 0, gotp R1Npos:
+		iaddq		$1, %rax		# count++
 R1Npos:
-		rmmovq 	%r10, (%rsi)
-		andq 		%r10, %r10			# val <= 0 ?
-		jle			Done						# if so, return
-		iaddq		$1, %rax				# count++	
+		rmmovq 		%r10, (%rsi)
+		andq 		%r10, %r10		# val <= 0 ?
+		jle		Done			# if so, return
+		iaddq		$1, %rax		# count++	
 ```
 
 Now use the instructions to rebuild and test our program:
