@@ -80,13 +80,13 @@ void printErrorConfig() {
 void initCache() {
     _cache_ = (cache)malloc(sizeof(cache_asso) * S);
     for (int i = 0; i < S; ++i) {
-				_cache_[i] = (cache_asso)malloc(sizeof(cache_line) * E);
-		for(int j = 0; j < E; ++j) {
-				_cache_[i][j].valid_bit = 0;
-				_cache_[i][j].tag = -1;
-				_cache_[i][j].time_stamp = -1;
-		}
-  }
+        _cache_[i] = (cache_asso)malloc(sizeof(cache_line) * E);
+        for(int j = 0; j < E; ++j) {
+            _cache_[i][j].valid_bit = 0;
+            _cache_[i][j].tag = -1;
+            _cache_[i][j].time_stamp = -1;
+        }
+    }
 }
 
 void updateCache(unsigned int addr) {
@@ -123,13 +123,13 @@ void updateCache(unsigned int addr) {
     if (empty_index != -1) {
         // if there is an empty line for new entry
         _cache_[set_index][empty_index].valid_bit = 1;
-				_cache_[set_index][empty_index].tag = tag;
-				_cache_[set_index][empty_index].time_stamp = 0;
+        _cache_[set_index][empty_index].tag = tag;
+        _cache_[set_index][empty_index].time_stamp = 0;
     } else if (evict_index != -1) {
         // no emtpy line, replace LFU entry
         _cache_[set_index][evict_index].valid_bit = 1;
-				_cache_[set_index][evict_index].tag = tag;
-				_cache_[set_index][evict_index].time_stamp = 0;
+        _cache_[set_index][evict_index].tag = tag;
+        _cache_[set_index][evict_index].time_stamp = 0;
 	    
         ++eviction_count;
         if (v) {
@@ -142,10 +142,10 @@ void updateCache(unsigned int addr) {
 }
 
 void updateTimeStamp() {
-    for(int i = 0; i < S; ++i)
-		for(int j = 0; j < E; ++j)
-			if(_cache_[i][j].valid_bit == 1)
-				++_cache_[i][j].time_stamp;
+	for(int i = 0; i < S; ++i)
+        for(int j = 0; j < E; ++j)
+            if(_cache_[i][j].valid_bit == 1)
+                ++_cache_[i][j].time_stamp;
 }
 
 void parseTrace() {
@@ -162,25 +162,26 @@ void parseTrace() {
     while (fscanf(fp, " %c %xu,%d\n", &identifier, &addr, &size) > 0) {
         // ignore instruction loads 'I'
         int valid = identifier == 'L' || identifier == 'S' || identifier == 'M';
-		if (v && valid) {
+        if (v && valid) {
             printf("%c %x,%d", identifier, addr, size / 16);
         }
 
-		switch (identifier) {
-			case 'M':   // a data load followed by a data store
-				updateCache(addr);
+        switch (identifier) {
+            // a data load followed by a data store
+            case 'M':
+                updateCache(addr);
             
             // a data load or a data store
             case 'L':
-			case 'S':   
-				updateCache(addr);
-		}
-		updateTimeStamp();	// update time stamps
+            case 'S':   
+                updateCache(addr);
+        }
+        updateTimeStamp();	// update time stamps
 
-    if (v && valid) {
-    		printf("\n");
+        if (v && valid) {
+            printf("\n");
+        }
     }
-	}
     
     fclose(fp);
 
@@ -206,27 +207,27 @@ int main(int argc, char* argv[])
             v = 1;
             break;
         case 's':
-						s = atoi(optarg);
-						break;
-				case 'E':
-						E = atoi(optarg);
-						break;
-				case 'b':
-						b = atoi(optarg);
-						break;
-				case 't':
-						strcpy(t, optarg);
-						break;
-				default:
-						printErrorOption(opt);
-						return -1;
+            s = atoi(optarg);
+            break;
+        case 'E':
+            E = atoi(optarg);
+            break;
+        case 'b':
+            b = atoi(optarg);
+            break;
+        case 't':
+            strcpy(t, optarg);
+            break;
+        default:
+            printErrorOption(opt);
+            return -1;
         }
     }
 
     // check arguments
     if(s <= 0 || E <= 0 || b <= 0 || t == NULL) {
         printErrorConfig();
-	    	return -1;
+	    return -1;
     }
 
     S = 1 << s;     // S = 2^s
@@ -274,18 +275,18 @@ There are also some limitations:
 
 We will mainly use **blocking** to reduce cache misses.
 
-### $32\times32$
+### 32×32
 
 The first testing matrix is 32 × 32. Because an int has 4 bytes and a cache line has 32 bytes, 8 ints can be put in 1 cache line. In the matrix, a row has 32 ints, which consume 4 cache lines. Then the whole cache can store 8 rows of the matrix. So 8 × 8 submatrices can be efficient to do blocking.
 
 ```c
 int i, j, m, n;
-		for (i = 0; i < N; i += 8)
-			for (j = 0; j < M; j += 8)
-				for (n = i; n < i + 8; ++n)
-					for (m = j; m < j + 8; ++m) {
-						B[m][n] = A[n][m];
-					}
+for (i = 0; i < N; i += 8)
+	for (j = 0; j < M; j += 8)
+        for (n = i; n < i + 8; ++n)
+            for (m = j; m < j + 8; ++m) {
+                B[m][n] = A[n][m];
+            }
 ```
 
 Consider the algorithm above. During the transpoing, despite of the cold misses, there will be a conflict miss when the entry is on the diagonal. For example, when copying $A_{44}$, row 3 in A will be put in the cache, but then to write the entry into $B_{44}$, row 3 in B will bring an eviction. And $A_{45}$ will also bring another miss.
@@ -296,14 +297,14 @@ To remove these two misses, we can read the whole line of the matrix before we w
 int i, j, k;
 int x[8];
 for (j = 0; j < M; j += 8) {
-	for (i = 0; i < N; ++i) {
+    for (i = 0; i < N; ++i) {
     // read 8 entries from A
-		for (k = 0; k < 8; ++k)
-			x[k] = A[i][j + k];
+        for (k = 0; k < 8; ++k)
+            x[k] = A[i][j + k];
     // transpose these entries
-		for (k = 0; k < 8; ++k)
-			B[j + k][i] = x[k];
-		}
+        for (k = 0; k < 8; ++k)
+            B[j + k][i] = x[k];
+	}
 }
 ```
 
@@ -316,27 +317,27 @@ int i, j, m, n;
 int x[8];
 for (i = 0; i < N; i += 8) {
 	for (j = 0; j < M; j += 8) {
-		if (i != j) {
-			for (n = i; n < (i + 8); ++n)
-				for (m = j; m < (j + 8); ++m)
-					B[m][n] = A[n][m];
-		} else {
-			for (n = 0; n < 8; ++n) {
-				for (m = 0; m < 8; ++m)
-					x[m] = A[i + n][j + m];
+        if (i != j) {
+            for (n = i; n < (i + 8); ++n)
+                for (m = j; m < (j + 8); ++m)
+                    B[m][n] = A[n][m];
+        } else {
+            for (n = 0; n < 8; ++n) {
+                for (m = 0; m < 8; ++m)
+                    x[m] = A[i + n][j + m];
 
-				for (m = 0; m < n; ++m)
-					B[i + n][j + m] = B[i + m][j + n];
+                for (m = 0; m < n; ++m)
+                    B[i + n][j + m] = B[i + m][j + n];
 
-				for (m = 0; m < 8; ++m) {
-					if (m < n) {
-						B[i + m][j + n] = x[m];
-					} else {
-						B[i + n][j + m] = x[m];
-					}
-				}
-			}
-		}
+                for (m = 0; m < 8; ++m) {
+                    if (m < n) {
+                        B[i + m][j + n] = x[m];
+                    } else {
+                        B[i + n][j + m] = x[m];
+                    }
+                }
+            }
+        }
 	}
 }
 ```
@@ -360,7 +361,7 @@ Summary for official submission (func 0): correctness=1 misses=261
 TEST_TRANS_RESULTS=1:261
 ```
 
-### $64\times64$
+### 64×64
 
 Under this case, the method above will not be efficient because row 0 and row 4 will be mapped to the same cache line. Therefore, an 8 × 8 submatrix needs to be divided further into 4 × 4 submatrices.
 
@@ -385,81 +386,81 @@ int x[4];
 // diagonal blocks
 for (i = 0; i < M; i += 8) {
 	if (i + 8 >= M) {
-		// last block
-    j = i - 8;
-  } else {
-    j = i + 8;
-  }
+        // last block
+        j = i - 8;
+    } else {
+        j = i + 8;
+    }
 
 	// copy diagonal blocks of A to non-diagonal blocks of B
 	for (m = 0; m < 8; ++m) {
-		for (n = 0; n < 8; ++n) {
-			B[i + m][j + n] = A[i + m][i + n];
-		}
+        for (n = 0; n < 8; ++n) {
+            B[i + m][j + n] = A[i + m][i + n];
+        }
 	} 
 	
 	// transpose copied blocks to diagonal blocks of B	
 	for (m = 0; m < 4; ++m) {
-		for (n = 0; n < 4; ++n) {
-			B[i + m][i + n] = B[i + n][j + m];
-				B[i + m][i + n + 4] = B[i + m][j + n + 4];						
-		}
+        for (n = 0; n < 4; ++n) {
+            B[i + m][i + n] = B[i + n][j + m];
+            B[i + m][i + n + 4] = B[i + m][j + n + 4];						
+        }
 	}
 	
 	for (m = 0; m < 4; ++m) {
 		for (n = 0; n < 4; ++n) {
-			B[i + m + 4][j + n] ^= B[i + n][i + m + 4];
-			B[i + n][i + m + 4] ^= B[i + m + 4][j + n];
-			B[i + m + 4][j + n] ^= B[i + n][i + m + 4];
-		}
+            B[i + m + 4][j + n] ^= B[i + n][i + m + 4];
+            B[i + n][i + m + 4] ^= B[i + m + 4][j + n];
+            B[i + m + 4][j + n] ^= B[i + n][i + m + 4];
+        }
 	}
 		
 	for (m = 0; m < 4; ++m) {
-		for (n = 0; n < 4; ++n) {
-			B[i + m + 4][i + n] = B[i + m + 4][j + n];
-			B[i + m + 4][i + n + 4] = B[i + n + 4][j + m + 4]; 
-    }
+        for (n = 0; n < 4; ++n) {
+            B[i + m + 4][i + n] = B[i + m + 4][j + n];
+            B[i + m + 4][i + n + 4] = B[i + n + 4][j + m + 4]; 
+        }
 	}
 }
 
 // non-diagonal blocks
 for (j = 0; j + 8 <= N; j += 8) {
 	for (i = 0; i + 8 <= M; i += 8) {
-		if (i != j) {
-			for (m = 0; m < 4; ++m) {
-				for (n = 0; n < 4; ++n) {
-					B[i + n][j + m] = A[j + m][i + n];
-					B[i + n][j + m + 4] = A[j + m][i + n + 4];						
-				}
-			}
+        if (i != j) {
+            for (m = 0; m < 4; ++m) {
+                for (n = 0; n < 4; ++n) {
+                    B[i + n][j + m] = A[j + m][i + n];
+                    B[i + n][j + m + 4] = A[j + m][i + n + 4];						
+                }
+            }
 
-			for (m = 0; m < 4; ++m) {
-				x[0] = B[i + m][j + 4];
-				x[1] = B[i + m][j + 5];
-				x[2] = B[i + m][j + 6];
-				x[3] = B[i + m][j + 7];
+            for (m = 0; m < 4; ++m) {
+                x[0] = B[i + m][j + 4];
+                x[1] = B[i + m][j + 5];
+                x[2] = B[i + m][j + 6];
+                x[3] = B[i + m][j + 7];
 
-        for(n = 0; n < 4; ++n){
-					B[i + m][j + 4 + n] = A[j + 4 + n][i + m];
-				}
+            for(n = 0; n < 4; ++n){
+                B[i + m][j + 4 + n] = A[j + 4 + n][i + m];
+            }
 		
-				B[i + 4 + m][j] = x[0];
-				B[i + 4 + m][j + 1] = x[1];
-				B[i + 4 + m][j + 2] = x[2];
-				B[i + 4 + m][j + 3] = x[3];
-			}
+                B[i + 4 + m][j] = x[0];
+                B[i + 4 + m][j + 1] = x[1];
+                B[i + 4 + m][j + 2] = x[2];
+                B[i + 4 + m][j + 3] = x[3];
+            }
 			
-			for (m = 0; m < 4; ++m) {
-				for (n = 0; n < 4; ++n) {
-					B[i + 4 + n][j + 4 + m] = A[j + 4 + m][i + 4 + n]; 
-				}
-			}
-		}	
+            for (m = 0; m < 4; ++m) {
+                for (n = 0; n < 4; ++n) {
+                    B[i + 4 + n][j + 4 + m] = A[j + 4 + m][i + 4 + n]; 
+                }
+            }
+        }	
 	}
 }
 ```
 
-### $61\times67$
+### 61×67
 
 Because there should be at most 12 local variables, and the given matrix is asymmetric. We use the second method in 32 × 32 part and deal with the corner cases respectively.
 
@@ -467,43 +468,43 @@ Because there should be at most 12 local variables, and the given matrix is asym
 int i, j, k;
 int x[8];
 for (j = 0; j < (M - (M % 8)); j += 8) {
-	for (i = 0; i < (N - (N % 8)); ++i) {
-		for (k = 0; k < 8; ++k)
-			x[k] = A[i][j + k];
-		for (k = 0; k < 8; ++k)
-			B[j + k][i] = x[k];
-	}
+    for (i = 0; i < (N - (N % 8)); ++i) {
+        for (k = 0; k < 8; ++k)
+            x[k] = A[i][j + k];
+        for (k = 0; k < 8; ++k)
+            B[j + k][i] = x[k];
+    }
 }
         
 for (i = 0; i < N; ++i) {
-	j = M - (M % 8);
-	for (k = 0; k < (M % 8); ++k) {
-		x[k] = A[i][j + k];
-	}
-	for (k = 0; k < (M % 8); ++k) {
-		B[j + k][i] = x[k];
-	}
+    j = M - (M % 8);
+    for (k = 0; k < (M % 8); ++k) {
+        x[k] = A[i][j + k];
+    }
+    for (k = 0; k < (M % 8); ++k) {
+        B[j + k][i] = x[k];
+    }
 }
         
 for (i = N - (N % 8); i < N; ++i) {
-	for (j = 0; j < M; j += 8) {
-		for (k = 0; k < 8 && (j + k) < M; ++k) {
-			x[k] = A[i][j + k];
-		}
-		for (k = 0; k < 8 && (j + k) < M; ++k) {
-			B[j + k][i] = x[k];
-		}
-	}
+    for (j = 0; j < M; j += 8) {
+        for (k = 0; k < 8 && (j + k) < M; ++k) {
+            x[k] = A[i][j + k];
+        }
+        for (k = 0; k < 8 && (j + k) < M; ++k) {
+            B[j + k][i] = x[k];
+        }
+    }
 }
         
 for (i = N - (N % 8); i < N; ++i) {
-	j = M - (M % 8);
-	for (k = 0; k < (M % 8); ++k) {
-		x[k] = A[i][j + k];
-	}
-	for (k = 0; k < (M % 8); ++k) {
-		B[j + k][i] = x[k];
-	}
+    j = M - (M % 8);
+    for (k = 0; k < (M % 8); ++k) {
+        x[k] = A[i][j + k];
+    }
+    for (k = 0; k < (M % 8); ++k) {
+        B[j + k][i] = x[k];
+    }
 }
 ```
 
