@@ -316,7 +316,7 @@ To avoid this, we must read row i + 1 of A before we write column i of B. Becaus
 int i, j, m, n;
 int x[8];
 for (i = 0; i < N; i += 8) {
-	for (j = 0; j < M; j += 8) {
+    for (j = 0; j < M; j += 8) {
         if (i != j) {
             for (n = i; n < (i + 8); ++n)
                 for (m = j; m < (j + 8); ++m)
@@ -338,7 +338,7 @@ for (i = 0; i < N; i += 8) {
                 }
             }
         }
-	}
+    }
 }
 ```
 
@@ -393,22 +393,22 @@ for (i = 0; i < M; i += 8) {
     }
 
 	// copy diagonal blocks of A to non-diagonal blocks of B
-	for (m = 0; m < 8; ++m) {
+    for (m = 0; m < 8; ++m) {
         for (n = 0; n < 8; ++n) {
             B[i + m][j + n] = A[i + m][i + n];
         }
 	} 
 	
 	// transpose copied blocks to diagonal blocks of B	
-	for (m = 0; m < 4; ++m) {
+    for (m = 0; m < 4; ++m) {
         for (n = 0; n < 4; ++n) {
             B[i + m][i + n] = B[i + n][j + m];
             B[i + m][i + n + 4] = B[i + m][j + n + 4];						
         }
 	}
 	
-	for (m = 0; m < 4; ++m) {
-		for (n = 0; n < 4; ++n) {
+    for (m = 0; m < 4; ++m) {
+        for (n = 0; n < 4; ++n) {
             B[i + m + 4][j + n] ^= B[i + n][i + m + 4];
             B[i + n][i + m + 4] ^= B[i + m + 4][j + n];
             B[i + m + 4][j + n] ^= B[i + n][i + m + 4];
@@ -420,7 +420,7 @@ for (i = 0; i < M; i += 8) {
             B[i + m + 4][i + n] = B[i + m + 4][j + n];
             B[i + m + 4][i + n + 4] = B[i + n + 4][j + m + 4]; 
         }
-	}
+    }
 }
 
 // non-diagonal blocks
@@ -456,7 +456,7 @@ for (j = 0; j + 8 <= N; j += 8) {
                 }
             }
         }	
-	}
+    }
 }
 ```
 
