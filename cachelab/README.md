@@ -282,7 +282,7 @@ The first testing matrix is 32 × 32. Because an int has 4 bytes and a cache lin
 ```c
 int i, j, m, n;
 for (i = 0; i < N; i += 8)
-	for (j = 0; j < M; j += 8)
+    for (j = 0; j < M; j += 8)
         for (n = i; n < i + 8; ++n)
             for (m = j; m < j + 8; ++m) {
                 B[m][n] = A[n][m];
@@ -385,7 +385,7 @@ int x[4];
 
 // diagonal blocks
 for (i = 0; i < M; i += 8) {
-	if (i + 8 >= M) {
+    if (i + 8 >= M) {
         // last block
         j = i - 8;
     } else {
@@ -397,7 +397,7 @@ for (i = 0; i < M; i += 8) {
         for (n = 0; n < 8; ++n) {
             B[i + m][j + n] = A[i + m][i + n];
         }
-	} 
+    } 
 	
 	// transpose copied blocks to diagonal blocks of B	
     for (m = 0; m < 4; ++m) {
@@ -405,7 +405,7 @@ for (i = 0; i < M; i += 8) {
             B[i + m][i + n] = B[i + n][j + m];
             B[i + m][i + n + 4] = B[i + m][j + n + 4];						
         }
-	}
+    }
 	
     for (m = 0; m < 4; ++m) {
         for (n = 0; n < 4; ++n) {
@@ -413,9 +413,9 @@ for (i = 0; i < M; i += 8) {
             B[i + n][i + m + 4] ^= B[i + m + 4][j + n];
             B[i + m + 4][j + n] ^= B[i + n][i + m + 4];
         }
-	}
+    }
 		
-	for (m = 0; m < 4; ++m) {
+    for (m = 0; m < 4; ++m) {
         for (n = 0; n < 4; ++n) {
             B[i + m + 4][i + n] = B[i + m + 4][j + n];
             B[i + m + 4][i + n + 4] = B[i + n + 4][j + m + 4]; 
@@ -425,7 +425,7 @@ for (i = 0; i < M; i += 8) {
 
 // non-diagonal blocks
 for (j = 0; j + 8 <= N; j += 8) {
-	for (i = 0; i + 8 <= M; i += 8) {
+    for (i = 0; i + 8 <= M; i += 8) {
         if (i != j) {
             for (m = 0; m < 4; ++m) {
                 for (n = 0; n < 4; ++n) {
