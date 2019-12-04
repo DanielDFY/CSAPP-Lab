@@ -23,7 +23,6 @@ Each line denotes one or two memory accesses. The format of each line is:
 The *operation* field denotes the type of memory access: `I` denotes an instruction load, `L` a data load, `S` a data store, and `M` a data modify (i.e., a data load followed by a data store). There is never a space before each `I`. There is always a space before each `M`, `L`, and `S`. The *address* field specifies a 64-bit hexadecimal memory address. The *size* field specifies the number of bytes accessed by the operation. 
 
 <h2 id = "partA">Part A</h2>
-
 In Part A we will write a cache simulator in `csim.c` that takes a valgrind memory trace as input, simulates the hit/miss behavior of a cache memory on this trace, and outputs the total number of hits, misses, and evictions. 
 
 Our simulator should perform the same as `csim-ref`. It uses the LFU (least-frequently used) replacement policy when choosing which cache line to evict.
@@ -291,7 +290,7 @@ for (i = 0; i < N; i += 8)
 
 Consider the algorithm above. During the transpoing, despite of the cold misses, there will be a conflict miss when the entry is on the diagonal. For example, when copying $A_{44}$, row 3 in A will be put in the cache, but then to write the entry into $B_{44}$, row 3 in B will bring an eviction. And $A_{45}$ will also bring another miss.
 
-To remove these two misses, we can read the whole line of the matrix before we write. 
+To reduce misses, we can read the whole line of the matrix before we write. 
 
 ```c
 int i, j, k;
@@ -308,7 +307,7 @@ for (j = 0; j < M; j += 8) {
 }
 ```
 
-However, this method will bring a new confilt miss. After transpossing row i of A into column i of B, row i + 1 of B has been put in the cache. It will be evicted by row i + 1 of A and reoccupy that cache line when writing into column i + 1.
+However, this method can not get rid of all the confilt misses. After transpossing row i of A into column i of B, row i + 1 of B has been put in the cache. It will be evicted by row i + 1 of A and reoccupy that cache line when writing into column i + 1.
 
 To avoid this, we must read row i + 1 of A before we write column i of B. Because of the variable amount limitation, the only way to store row i of A seems to make use of the space in B. We can temporarily store the entries in row i of B.
 
