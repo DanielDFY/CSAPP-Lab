@@ -288,7 +288,7 @@ for (i = 0; i < N; i += 8)
             }
 ```
 
-Consider the algorithm above. During the transpoing, despite of the cold misses, there will be a conflict miss when the entry is on the diagonal. For example, when copying $A_{44}$, row 3 in A will be put in the cache, but then to write the entry into $B_{44}$, row 3 in B will bring an eviction. And $A_{45}$ will also bring another miss.
+Consider the algorithm above. During the transposing, despite of the cold misses, there will be a conflict miss when the entry is on the diagonal. For example, when copying $A_{44}$, row 3 in A will be put in the cache, but then to write the entry into $B_{44}$, row 3 in B will bring an eviction. And $A_{45}$ will also bring another miss.
 
 To reduce misses, we can read the whole line of the matrix before we write. 
 
